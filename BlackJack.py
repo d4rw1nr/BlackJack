@@ -30,3 +30,6 @@ def BlackJack(deck: Deck, bet: float):
     print("deck after game:" + str(deck))
 
 BlackJack(deck, 2)
+
+def contar(a,b):
+    a+b
