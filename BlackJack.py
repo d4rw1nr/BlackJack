@@ -29,4 +29,4 @@ def BlackJack(deck: Deck, bet: float):
     print(player)
     print("deck after game:" + str(deck))
 
-BlackJack(deck, 1)
+BlackJack(deck, 2)
