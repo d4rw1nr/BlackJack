@@ -1,35 +1,22 @@
-from Deck import Deck
+from Actions import shuffle_deck
+from Actions import deal
+from Actions import hit
 
 # Se crea la baraja de cartas
-suits = ["♥","♦","♣","♠"]
-values = ["A","2","3","4","5","6","7","8","9","10","J","Q","K",]
-cards = []
+deck_values = {"A":11, "2": 2, "3":3, "4":4, "5":5, "6":6, "7":7, "8":8, "9":9, "10":10, "J":10, "Q":10, "K":10}
 
-for suit in suits:
-    for value in values:
-        cards.append(value+suit)
+deck = ["A","2","3","4","5","6","7","8","9","10","J","Q","K",]*4
 
-deck:Deck = Deck(cards)
-
-def BlackJack(deck: Deck, bet: float):
-    
-    deck.shuffle_deck()
-
-    print("deck before game:" + str(deck))
+def play(deck:list):
+    shuffle_deck(deck)
 
     croupier = []
     player = []
 
-    if deck:
-        croupier.append(deck.take_card())
-        player.append(deck.take_card())
-        player.append(deck.take_card())
+    deal(deck, croupier, player)
+    print("Croupier cards:" + str(croupier))
+    print("Player cards:" + str(player))
+    
 
-    print(croupier)
-    print(player)
-    print("deck after game:" + str(deck))
 
-BlackJack(deck, 2)
-
-def contar(a,b):
-    a+b
+play(deck)
