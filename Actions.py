@@ -1,30 +1,83 @@
 import random
 
+deck_values = {"A":11, "2": 2, "3":3, "4":4, "5":5, "6":6, "7":7, "8":8, "9":9, "10":10, "J":10, "Q":10, "K":10}
+
+# GENERAL
 def shuffle_deck(deck: list):
     random.shuffle(deck)
 
+def count_cards(person: list):
+    person[1] = 0
+    for cards in person[0]:
+        person[1] = person[1] + deck_values[cards]
+    if ((person[1] > 21) and ('A' in person[0])):
+        person[1] = person[1] - 10
+
+# GAME ACTIONS
 def deal(deck: list, croupier: list, player: list):
-    croupier.append(deck.pop(0))
-    player.append(deck.pop(0))
-    player.append(deck.pop(0))
+    # Croupier takes a card and counts
+    croupier[0].append(deck.pop(0))
+    count_cards(croupier)
 
-def winner(croupier:list, player:list):
-    print("gg")
+    # Player takes a card and counts
+    player[0].append(deck.pop(0))
+    player[0].append(deck.pop(0))
+    count_cards(player)
 
+def winner(croupier: list, player: list):
+    if (croupier[1]>21 and player[1]>21):
+        result="TIE"
+        return(result)
+    elif (croupier[1]>21 or player[1]>21): # someone has exceeded 21 
+        if (croupier[1]>21):
+            result="PLAYER WINS"
+            return(result)
+        elif (player[1]>21):
+            result="HOUSE WINS"
+            return(result)
+    elif (croupier[1]==21 and player[1]==21): # Both have 21
+        if ((len(croupier[0]) == 2) and (len(player[0]) == 2)): # Both have BlackJack
+            result="TIE"
+            return(result)
+        elif(len(croupier[0]) == 2 and (len(player[0]) != 2)): # croupier has blackjack
+            result="HOUSE WINS"
+            return(result)
+        elif(len(croupier[0]) != 2 and (len(player[0]) == 2)):# player has blackjack
+            result="PLAYER WINS"
+            return(result)
+    elif (croupier[1] == player[1]): # both have the same value
+        result="TIE"
+        return(result)
+    elif (croupier[1] > player[1]):
+        result="HOUSE WINS"
+        return(result)
+    elif (croupier[1] < player[1]):
+        result="PLAYER WINS"
+        return(result)
+
+
+def play_croupier(deck:list ,croupier: list, player: list):
+    # Juega el croupier hasta que se plante
+    while croupier[1] < 17:
+        croupier[0].append(deck.pop(0))
+        count_cards(croupier)
+    # Se elige el ganador
+    result = winner(croupier, player)
+    return result
+
+
+
+
+
+# PLAYER ACTIONS
 def stand(deck: list, croupier: list, player: list):
-    # Values of the cards in the deck
-    values = {"A":11, "2": 2, "3":3, "4":4, "5":5, "6":6, "7":7, "8":8, "9":9, "10":10, "J":10, "Q":10, "K":10}
-    # The croupier takes a card
-    croupier.append(deck.pop(0))
-    # Comparacion de 
-    cr_total = 0
-    for i in croupier:
-        val = values[croupier[i]]
-        cr_total = cr_total + val
-    return("House")
+    result = play_croupier(deck, croupier, player)
+    return result
+
 
 def hit(deck: list, player: list):
     player.append(deck.pop(0))
+
 
 def double_down(deck:list, player:list):
     player.append(deck.pop(0))
