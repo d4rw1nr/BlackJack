@@ -3,7 +3,7 @@ import Actions as act
 # Se crea la baraja de cartas
 
 deck = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"]*4
-deck_test = ["A","A","A","A","2","2","7","8","9","10","J","Q","K"]*4
+deck_test = ["A","K","K","6","Q","2","7","8","9","10","J","Q","K"]*4
 deck_values = {"2": 2, "3":3, "4":4, "5":5, "6":6, "7":7, "8":8, "9":9, "10":10, "J":10, "Q":10, "K":10, "A":11}
 
 def play(deck:list):
@@ -17,15 +17,12 @@ def play(deck:list):
     print("Croupier 1:" + str(croupier))
     print("Player 1:" + str(player))
 
-    result = act.stand(deck, croupier, player)
-
-    print("Croupier 2:" + str(croupier))
-    print("Player 2:" + str(player))
-
-    return result
+    players = act.split(deck, player)
+    print(players[0])
+    print(players[1])
 
 
-print(play(deck_test))
+play(deck)
 
 
 #def hard_total(deck:list,croupier:list, player:list, surrender:bool):

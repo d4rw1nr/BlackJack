@@ -18,7 +18,7 @@ def deal(deck: list, croupier: list, player: list):
     # Croupier takes a card and counts
     croupier[0].append(deck.pop(0))
     count_cards(croupier)
-
+    
     # Player takes a card and counts
     player[0].append(deck.pop(0))
     player[0].append(deck.pop(0))
@@ -56,7 +56,7 @@ def winner(croupier: list, player: list):
         return(result)
 
 
-def play_croupier(deck:list ,croupier: list, player: list):
+def dead_end(deck:list ,croupier: list, player: list):
     # Juega el croupier hasta que se plante
     while croupier[1] < 17:
         croupier[0].append(deck.pop(0))
@@ -66,19 +66,29 @@ def play_croupier(deck:list ,croupier: list, player: list):
     return result
 
 
-
-
-
 # PLAYER ACTIONS
 def stand(deck: list, croupier: list, player: list):
-    result = play_croupier(deck, croupier, player)
+    result = dead_end(deck, croupier, player)
     return result
 
 
 def hit(deck: list, player: list):
-    player.append(deck.pop(0))
+    player[0].append(deck.pop(0))
+    count_cards(player)
 
 
-def double_down(deck:list, player:list):
-    player.append(deck.pop(0))
+def double(deck:list, croupier: list, player:list):
+    player[0].append(deck.pop(0))
+    count_cards(player)
+    result = dead_end(deck, croupier, player)
+    return result
 
+
+def split(deck:list, player: list):
+    player1 = [[player[0][0]], 0]
+    player2 = [[player[0][1]], 0]
+    player1[0].append(deck.pop(0))
+    player2[0].append(deck.pop(0))
+    count_cards(player1)
+    count_cards(player2)
+    return ([player1, player2])
