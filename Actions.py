@@ -10,8 +10,27 @@ def count_cards(person: list):
     person[1] = 0
     for cards in person[0]:
         person[1] = person[1] + deck_values[cards]
-    if ((person[1] > 21) and ('A' in person[0])):
+    # Hands situations with As
+    if ((person[1] > 21) and ('A' in person[0])): # 1 As
         person[1] = person[1] - 10
+        if ((person[1] > 21) and (person[0].count("A") == 2)): # 2 A
+            person[1] = person[1] - 10
+            if ((person[1] > 21) and (person[0].count("A") == 3)): # 3 A
+                person[1] = person[1] - 10
+                if ((person[1] > 21) and (person[0].count("A") == 4)): # 4 A
+                    person[1] = person[1] - 10
+                    if ((person[1] > 21) and (person[0].count("A") == 4)): # 5
+                        person[1] = person[1] - 10
+                        if ((person[1] > 21) and (person[0].count("A") == 4)): # 6
+                            person[1] = person[1] - 10
+                            if ((person[1] > 21) and (person[0].count("A") == 4)): # 7
+                                person[1] = person[1] - 10
+                                if ((person[1] > 21) and (person[0].count("A") == 4)): # 8
+                                    person[1] = person[1] - 10
+                                    if ((person[1] > 21) and (person[0].count("A") == 4)): # 9
+                                        person[1] = person[1] - 10
+                                        if ((person[1] > 21) and (person[0].count("A") == 4)): # 10
+                                            person[1] = person[1] - 10
 
 # GAME ACTIONS
 def deal(deck: list, croupier: list, player: list):
@@ -30,29 +49,29 @@ def winner(croupier: list, player: list):
         return(result)
     elif (croupier[1]>21 or player[1]>21): # someone has exceeded 21 
         if (croupier[1]>21):
-            result="PLAYER WINS"
+            result="PLAYER"
             return(result)
         elif (player[1]>21):
-            result="HOUSE WINS"
+            result="HOUSE"
             return(result)
     elif (croupier[1]==21 and player[1]==21): # Both have 21
         if ((len(croupier[0]) == 2) and (len(player[0]) == 2)): # Both have BlackJack
             result="TIE"
             return(result)
         elif(len(croupier[0]) == 2 and (len(player[0]) != 2)): # croupier has blackjack
-            result="HOUSE WINS"
+            result="HOUSE"
             return(result)
         elif(len(croupier[0]) != 2 and (len(player[0]) == 2)):# player has blackjack
-            result="PLAYER WINS"
+            result="PLAYER"
             return(result)
     elif (croupier[1] == player[1]): # both have the same value
         result="TIE"
         return(result)
     elif (croupier[1] > player[1]):
-        result="HOUSE WINS"
+        result="HOUSE"
         return(result)
     elif (croupier[1] < player[1]):
-        result="PLAYER WINS"
+        result="PLAYER"
         return(result)
 
 
