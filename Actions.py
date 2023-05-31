@@ -104,8 +104,8 @@ def double(deck:list, croupier: list, player:list):
 
 
 def split(deck:list, player: list):
-    player1 = [[player[0][0]], 0]
-    player2 = [[player[0][1]], 0]
+    player1 = [[player[0][0]], 0, 0]
+    player2 = [[player[0][1]], 0, 0]
     player1[0].append(deck.pop(0))
     player2[0].append(deck.pop(0))
     count_cards(player1)
