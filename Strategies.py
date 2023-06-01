@@ -84,12 +84,8 @@ def game(deck: list, croupier: list, player: list):
     while result == None:
         if ("A" in player[0]) and (len(player[0]) == 2):
             result=soft_total(deck, croupier, player)
-            print("Croupier 1:" + str(croupier))
-            print("Player 1:" + str(player))
         else:
             result=hard_total(deck, croupier, player)
-            print("Croupier 1:" + str(croupier))
-            print("Player 1:" + str(player))
     return(result)
 
 def pairs(deck: list, croupier: list, player: list):

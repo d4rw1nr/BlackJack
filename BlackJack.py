@@ -1,33 +1,45 @@
+import pandas as pd
+
 import Actions as act
 import Strategies as sttgy
 
-# Se crea la baraja de cartas
-
+# Create the deck
 deck = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"]*4
-deck_test = ["6","7","7","A","5","3","10","J","5","9","J","Q","K"]*4
-deck_values = {"2": 2, "3":3, "4":4, "5":5, "6":6, "7":7, "8":8, "9":9, "10":10, "J":10, "Q":10, "K":10, "A":11}
+# Game activity log
+games_log = {"p_cards": [], "p_value": [], "c_cards": [], "c_value": [], "winner": []}
 
-def play(deck:list):
-    
-    croupier = [[],0] # cards, value of the cards
-    player = [[],0,0] # cards, value of the cards, bet
+def play(deck:list, n_games: int):
+    i = 0 # index for iteration of the number of games
+    act.shuffle_deck(deck) # shuffle the list deck
 
-    act.shuffle_deck(deck)
+    while i < n_games:
 
-    act.deal(deck, croupier, player)
-    print("Croupier 0:" + str(croupier))
-    print("Player 0:" + str(player))
+        croupier = [[],0] # cards, value of the cards
+        player = [[],0] # cards, value of the cards, bet
 
-    result = None
-    while result == None:
-        if ((player[0][0]==player[0][1]) and (len(player[0]) == 2)):
-            result = sttgy.pairs(deck, croupier, player)
-        else:
-            result = sttgy.game(deck, croupier, player)
-    
-    return(result)
+        if len(deck) < (52*0.25):
+            new_deck = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"]*4
+            deck.extend(new_deck)
+            act.shuffle_deck(deck)
+
+        act.deal(deck, croupier, player) # deal the cards 1 to croupier and 2 to player
+
+        result = None  # string with the text PLAYER, HOUSE or TIE for the result of the game
+        while result == None:
+            if ((player[0][0]==player[0][1]) and (len(player[0]) == 2)):
+                result = sttgy.pairs(deck, croupier, player) # decisions if the player got the same two cards in the deal
+            else:
+                result = sttgy.game(deck, croupier, player) # decision if the cards in the deal are not the same
+        
+        games_log["p_cards"].append(player[0])
+        games_log["p_value"].append(player[1])
+        games_log["c_cards"].append(croupier[0])
+        games_log["c_value"].append(croupier[1])
+        games_log["winner"].append(result)
+
+        i = i+1
 
 
-
-blackjack=play(deck)
-print(blackjack)
+play(deck, 20)
+games_df = pd.DataFrame(games_log)
+print(games_df)
