@@ -110,4 +110,5 @@ def split(deck:list, player: list):
     player2[0].append(deck.pop(0))
     count_cards(player1)
     count_cards(player2)
-    return ([player1, player2])
+    player = [player1[0],player2[0]]
+    return ([[player1, player2],[player]])
