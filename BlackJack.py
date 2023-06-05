@@ -41,6 +41,8 @@ def play(deck:list, n_games: int):
         games_log["game_log"].append(player[2])
         games_log["winner"].append(result)
 
+        print(player)
+
         i = i+1
 
 
