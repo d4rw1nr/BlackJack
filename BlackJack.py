@@ -25,8 +25,6 @@ def play(deck:list, n_games: int):
 
         act.deal(deck, croupier, player) # deal the cards 1 to croupier and 2 to player
 
-        print("error: "+str(player))
-
         result = None  # string with the text PLAYER, HOUSE or TIE for the result of the game
         while result == None:
             if ((player[0][0]==player[0][1]) and (len(player[0]) == 2)):
@@ -41,11 +39,9 @@ def play(deck:list, n_games: int):
         games_log["game_log"].append(player[2])
         games_log["winner"].append(result)
 
-        print(player)
-
         i = i+1
 
 
-play(deck_test, 1)
+play(deck, 10)
 games_df = pd.DataFrame(games_log)
 print(games_df)

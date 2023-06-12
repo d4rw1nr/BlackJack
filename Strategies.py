@@ -126,8 +126,8 @@ def game(deck: list, croupier: list, player: list):
 def pairs(deck: list, croupier: list, player: list):
     if player[0][0] == "A":
         players = act.split(deck, player)
-        result1 = game(deck, croupier, players[0][0])
-        result2 = game(deck, croupier, players[0][1])
+        result1 = game(deck, croupier, players[0])
+        result2 = game(deck, croupier, players[1])
         player[0] = [players[0][0],players[1][0]]
         player[1] = [players[0][1],players[1][1]]
         player[2] = [players[0][2],players[1][2]]
@@ -145,8 +145,8 @@ def pairs(deck: list, croupier: list, player: list):
             return(result)
         else:
             players = act.split(deck, player)
-            result1 = game(deck, croupier, players[0][0])
-            result2 = game(deck, croupier, players[0][1])
+            result1 = game(deck, croupier, players[0])
+            result2 = game(deck, croupier, players[1])
             player[0] = [players[0][0],players[1][0]]
             player[1] = [players[0][1],players[1][1]]
             player[2] = [players[0][2],players[1][2]]
@@ -154,8 +154,8 @@ def pairs(deck: list, croupier: list, player: list):
 
     elif player[0][0] == "8":
         players = act.split(deck, player)
-        result1 = game(deck, croupier, players[0][0])
-        result2 = game(deck, croupier, players[0][1])
+        result1 = game(deck, croupier, players[0])
+        result2 = game(deck, croupier, players[1])
         player[0] = [players[0][0],players[1][0]]
         player[1] = [players[0][1],players[1][1]]
         player[2] = [players[0][2],players[1][2]]
@@ -167,8 +167,8 @@ def pairs(deck: list, croupier: list, player: list):
             player[2].append("H")
         else:
             players = act.split(deck, player)
-            result1 = game(deck, croupier, players[0][0])
-            result2 = game(deck, croupier, players[0][1])
+            result1 = game(deck, croupier, players[0])
+            result2 = game(deck, croupier, players[1])
             player[0] = [players[0][0],players[1][0]]
             player[1] = [players[0][1],players[1][1]]
             player[2] = [players[0][2],players[1][2]]
@@ -180,8 +180,8 @@ def pairs(deck: list, croupier: list, player: list):
             player[2].append("H")
         else:
             players = act.split(deck, player)
-            result1 = game(deck, croupier, players[0][0])
-            result2 = game(deck, croupier, players[0][1])
+            result1 = game(deck, croupier, players[0])
+            result2 = game(deck, croupier, players[1])
             player[0] = [players[0][0],players[1][0]]
             player[1] = [players[0][1],players[1][1]]
             player[2] = [players[0][2],players[1][2]]
@@ -199,8 +199,8 @@ def pairs(deck: list, croupier: list, player: list):
     elif player[0][0] == "4":
         if croupier[1] in (5,6):
             players = act.split(deck, player)
-            result1 = game(deck, croupier, players[0][0])
-            result2 = game(deck, croupier, players[0][1])
+            result1 = game(deck, croupier, players[0])
+            result2 = game(deck, croupier, players[1])
             player[0] = [players[0][0],players[1][0]]
             player[1] = [players[0][1],players[1][1]]
             player[2] = [players[0][2],players[1][2]]
@@ -215,8 +215,8 @@ def pairs(deck: list, croupier: list, player: list):
             player[2].append("H")
         else:
             players = act.split(deck, player)
-            result1 = game(deck, croupier, players[0][0])
-            result2 = game(deck, croupier, players[0][1])
+            result1 = game(deck, croupier, players[0])
+            result2 = game(deck, croupier, players[1])
             player[0] = [players[0][0],players[1][0]]
             player[1] = [players[0][1],players[1][1]]
             player[2] = [players[0][2],players[1][2]]
