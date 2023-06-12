@@ -1,5 +1,6 @@
 import random
 
+# General values of cards
 deck_values = {"A":11, "2": 2, "3":3, "4":4, "5":5, "6":6, "7":7, "8":8, "9":9, "10":10, "J":10, "Q":10, "K":10}
 
 # GENERAL
@@ -43,6 +44,7 @@ def deal(deck: list, croupier: list, player: list):
     player[0].append(deck.pop(0))
     count_cards(player)
 
+# method to define the winner of the game
 def winner(croupier: list, player: list):
     if (croupier[1]>21 and player[1]>21):
         result="TIE"
@@ -74,7 +76,7 @@ def winner(croupier: list, player: list):
         result="PLAYER"
         return(result)
 
-
+# End of the actions by the player
 def dead_end(deck:list ,croupier: list, player: list):
     # Juega el croupier hasta que se plante
     while croupier[1] < 17:
