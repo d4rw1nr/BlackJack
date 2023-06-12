@@ -3,15 +3,15 @@ import pandas as pd
 import Actions as act
 import Strategies as sttgy
 
-# Create the deck
-deck = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"]*4
-deck_test = ["2","3","3","5","6","7","8","9","10","J","Q","K","A"]
-# Game activity log
-games_log = {"p_cards": [], "p_value": [], "c_cards": [], "c_value": [], "game_log":[], "winner": []}
 
-def play(deck:list, n_games: int):
+def play(n_games: int, bet: int):
     i = 0 # index for iteration of the number of games
-    #act.shuffle_deck(deck) # shuffle the list deck
+
+    # Game activity log
+    games_log = {"p_cards": [], "p_value": [], "c_cards": [], "c_value": [], "game_log":[], "winner": [], "boat": []}
+
+    deck = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"]*4 # Create the deck
+    act.shuffle_deck(deck) # shuffle the list deck
 
     while i < n_games:
 
@@ -32,16 +32,34 @@ def play(deck:list, n_games: int):
             else:
                 result = sttgy.game(deck, croupier, player) # decision if the cards in the deal are not the same
         
+        if result == "PLAYER" and "D" in player[2]: bet = bet+2
+        elif result == "PLAYER": bet = bet+1
+        elif result == "HOUSE" and "D" in player[2]: bet = bet-2
+        elif result == "HOUSE": bet = bet-1
+        if len(result) == 2: # Change in the boat for a split hand game
+            if result[0] == "PLAYER" and "D" in player[2]: bet = bet+2
+            elif result[0] == "PLAYER": bet = bet+1
+            elif result == "HOUSE" and "D" in player[2]: bet = bet-2
+            elif result[0] == "HOUSE": bet = bet-1
+
+            if result[1] == "PLAYER" and "D" in player[2]: bet = bet+2
+            elif result[1] == "PLAYER": bet = bet+1
+            elif result == "HOUSE" and "D" in player[2]: bet = bet-2
+            elif result[1] == "HOUSE": bet = bet-1
+        
         games_log["p_cards"].append(player[0])
         games_log["p_value"].append(player[1])
         games_log["c_cards"].append(croupier[0])
         games_log["c_value"].append(croupier[1])
         games_log["game_log"].append(player[2])
         games_log["winner"].append(result)
+        games_log["boat"].append(bet)
 
         i = i+1
+    
+    games_df = pd.DataFrame(games_log)
+    return(games_df)
 
 
-play(deck, 10)
-games_df = pd.DataFrame(games_log)
+games_df = play(50, 0)
 print(games_df)
