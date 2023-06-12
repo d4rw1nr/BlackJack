@@ -20,17 +20,17 @@ def count_cards(person: list):
                 person[1] = person[1] - 10
                 if ((person[1] > 21) and (person[0].count("A") == 4)): # 4 A
                     person[1] = person[1] - 10
-                    if ((person[1] > 21) and (person[0].count("A") == 4)): # 5
+                    if ((person[1] > 21) and (person[0].count("A") == 5)): # 5
                         person[1] = person[1] - 10
-                        if ((person[1] > 21) and (person[0].count("A") == 4)): # 6
+                        if ((person[1] > 21) and (person[0].count("A") == 6)): # 6
                             person[1] = person[1] - 10
-                            if ((person[1] > 21) and (person[0].count("A") == 4)): # 7
+                            if ((person[1] > 21) and (person[0].count("A") == 7)): # 7
                                 person[1] = person[1] - 10
-                                if ((person[1] > 21) and (person[0].count("A") == 4)): # 8
+                                if ((person[1] > 21) and (person[0].count("A") == 8)): # 8
                                     person[1] = person[1] - 10
-                                    if ((person[1] > 21) and (person[0].count("A") == 4)): # 9
+                                    if ((person[1] > 21) and (person[0].count("A") == 9)): # 9
                                         person[1] = person[1] - 10
-                                        if ((person[1] > 21) and (person[0].count("A") == 4)): # 10
+                                        if ((person[1] > 21) and (person[0].count("A") == 10)): # 10
                                             person[1] = person[1] - 10
 
 # GAME ACTIONS
