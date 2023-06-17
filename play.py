@@ -3,7 +3,6 @@ import pandas as pd
 import Actions as act
 import Strategies as sttgy
 
-
 def play(n_games: int, bet: int):
     i = 0 # index for iteration of the number of games
 
@@ -24,6 +23,8 @@ def play(n_games: int, bet: int):
             act.shuffle_deck(deck)
 
         act.deal(deck, croupier, player) # deal the cards 1 to croupier and 2 to player
+
+        print("las cartas son: " , str(player[0]) , str(croupier[0]))
 
         result = None  # string with the text PLAYER, HOUSE or TIE for the result of the game
         while result == None:
@@ -59,7 +60,3 @@ def play(n_games: int, bet: int):
     
     games_df = pd.DataFrame(games_log)
     return(games_df)
-
-
-games_df = play(50, 0)
-print(games_df)
