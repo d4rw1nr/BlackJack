@@ -60,3 +60,6 @@ def play(n_games: int, bet: int):
     
     games_df = pd.DataFrame(games_log)
     return(games_df)
+
+bj = play(100, 0)
+print(bj)
