@@ -31,7 +31,9 @@ class BlackjackGame:
         self.view.show_player_hand(self.player.cards, self.player.values)
 
     def stand(self):
-        self.croupier.add_card(self.deck.draw_card())
+        pass
+    
+    def croupier_play(self):
         while self.croupier.values < 17:
             self.croupier.add_card(self.deck.draw_card())
         # Show cards
@@ -44,8 +46,8 @@ class BlackjackGame:
 
 
     def game_standard(self):
-        while self.player.values < 21:
-            action = self.view.actions_player_SH()
+        while self.player.values <= 21:
+            action = self.view.actions_player(False, False)
             if action == "h": 
                 self.hit()
             elif action == "s":
@@ -55,10 +57,10 @@ class BlackjackGame:
     def play_game(self):
         if self.player.cards[0] == self.player.cards[1]:
             # Player choice on pairs
-            action = self.view.actions_player_SHDP()
+            action = self.view.actions_player(True, True)
             if action == 'h': #hit
                 self.hit()
-                self.game_standard
+                self.game_standard()
             elif action == 's': #stand
                 self.stand()
             elif action == 'd': #double
@@ -67,16 +69,17 @@ class BlackjackGame:
                 self.split()
         else:
             # Player choice on regular cards
-            action = self.view.actions_player_SHD()
+            action = self.view.actions_player(True, False)
             if action == 'h': #hit
                 self.hit()
-                self.game_standard
+                self.game_standard()
             elif action == 's': #stand
                 self.stand()
             elif action == 'd': #double
                 self.double()
 
     def finish_game(self):
+        self.croupier_play()
         if self.croupier.values > 21 and self.player.values > 21: # both exceeded 21
             winner = 0
         elif self.croupier.values > 21 or self.player.values > 21: # someone exceeded 21
@@ -114,7 +117,7 @@ class BlackjackGame:
         print("-------")
         # Game standard adjusted
         while self.player.values < 21:
-            action = self.view.actions_player_SH()
+            action = self.view.actions_player(False, False)
             if action == "h": 
                 self.hit()
             elif action == "s":
@@ -126,7 +129,7 @@ class BlackjackGame:
         print("-------")
         # Game standard adjusted
         while split_player.values < 21:
-            action = self.view.actions_player_SH()
+            action = self.view.actions_player(False, False)
             if action == "h":
                 split_player.add_card(self.deck.draw_card())
                 # Show cards
