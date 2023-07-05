@@ -8,7 +8,6 @@ class BlackjackView:
 
     def show_croupier_hand(self, cards, value):
         self.print_separator()
-        self.print_separator()
         print("Croupier cards: " + str(cards) + "  Value: " + str(value))
 
     def show_player_hand(self, cards, value):
