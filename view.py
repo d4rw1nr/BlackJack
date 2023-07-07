@@ -6,6 +6,39 @@ class BlackjackView:
         self.print_separator()
         print("Welcome to py_BlackJack \n by: d4rw1nr \n Good luck!")
 
+    def get_balance(self):
+        self.print_separator()
+        balance = int(input("Set your initial balance amount:  "))
+        self.print_separator()
+        return balance
+    
+    def get_initial_bet(self, balance):
+        while True:
+            try:
+                self.print_separator()
+                bet = int(input("Enter the amount you want to bet (you have {} chips):  ".format(balance)))
+                if 0 < bet <= balance:
+                    return bet
+                else:
+                    print("Please enter a valid bet amount.")
+            except ValueError:
+                print("Please enter a number.")
+    
+    def show_current_balance(self, balance):
+        self.print_separator()
+        print("Your current balance is: " + str(balance))
+
+    def ask_continue_playing(self):
+        self.print_separator()
+        continue_playing = input("Continue playing?  Y/N \n").lower()
+        options = ["y", "n"]
+        while True:
+            if continue_playing in options:
+                break
+            else:
+                print("Invalid input, please try again.")
+        return continue_playing
+
     def show_croupier_hand(self, cards, value):
         self.print_separator()
         print("Croupier cards: " + str(cards) + "  Value: " + str(value))
