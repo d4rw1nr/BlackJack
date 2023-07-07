@@ -42,6 +42,18 @@ class Participant:
 class Player(Participant):
     def __init__(self) -> None:
         super().__init__()
+        self._balance = 0
+
+    @property
+    def balance(self):
+        return self._balance
+    
+    @balance.setter
+    def balance(self, new_balance):
+        if isinstance(new_balance, int):
+            self._balance = new_balance
+        else:
+            raise ValueError("Balance must be a integer")
 
 class Croupier(Participant):
     def __init__(self) -> None:
