@@ -26,7 +26,7 @@ class BlackjackView:
     
     def show_current_balance(self, balance):
         self.print_separator()
-        print("Your current balance is: " + str(balance))
+        print("Your current balance is " + str(balance))
 
     def ask_continue_playing(self):
         self.print_separator()
