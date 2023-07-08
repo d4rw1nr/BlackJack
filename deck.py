@@ -2,8 +2,10 @@ import random
 
 class Deck:
     def __init__(self) -> None:
-        self._cards = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"]*4
+        self.total_decks = 6 # Total of decks to play, its usual to face more than a unique deck in casinos
+        self._cards = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"]*4*self.total_decks
         self.shuffle()
+        self.replenish_threshold = len(self._cards) // 2
 
     @property
     def cards(self):
@@ -19,11 +21,11 @@ class Deck:
     def shuffle(self):
         random.shuffle(self._cards)
 
-    def replenish_deck(self):
-        if len(self._cards) < 13:
-            additional_deck = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"]*4
-            self._cards.extend(additional_deck)
+    def replenish_deck(self): # Change of the deck if the number of cards is lower than the half of the initial cards
+            self._cards = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"]*4*self.total_decks
             self.shuffle()
 
-    def draw_card(self):
+    def draw_card(self): # Change of the deck if the number of cards is lower than the half of the initial cards
+        if len(self._cards) < self.replenish_threshold:
+            self.replenish_deck()
         return self._cards.pop()
