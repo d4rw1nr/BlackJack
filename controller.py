@@ -80,13 +80,16 @@ class BlackjackGame:
             if action == 'h': #hit
                 self.hit()
                 self.game_standard()
-                self.finish_game()
+                self.croupier_play()
+                self.finish_game(self.croupier.cards, self.croupier.values, self.player.cards, self.player.values)
             elif action == 's': #stand
                 self.stand()
-                self.finish_game()
+                self.croupier_play()
+                self.finish_game(self.croupier.cards, self.croupier.values, self.player.cards, self.player.values)
             elif action == 'd': #double
                 self.double()
-                self.finish_game()
+                self.croupier_play()
+                self.finish_game(self.croupier.cards, self.croupier.values, self.player.cards, self.player.values)
             elif action == 'sp': #split
                 self.split()
         else:
@@ -99,13 +102,16 @@ class BlackjackGame:
             if action == 'h': #hit
                 self.hit()
                 self.game_standard()
-                self.finish_game()
+                self.croupier_play()
+                self.finish_game(self.croupier.cards, self.croupier.values, self.player.cards, self.player.values)
             elif action == 's': #stand
                 self.stand()
-                self.finish_game()
+                self.croupier_play()
+                self.finish_game(self.croupier.cards, self.croupier.values, self.player.cards, self.player.values)
             elif action == 'd': #double
                 self.double()
-                self.finish_game()
+                self.croupier_play()
+                self.finish_game(self.croupier.cards, self.croupier.values, self.player.cards, self.player.values)
 
     def croupier_play(self):
         while self.croupier.values < 17:
@@ -114,36 +120,40 @@ class BlackjackGame:
         self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
         self.view.show_player_hand(self.player.cards, self.player.values)
 
-    def finish_game(self):
-        self.croupier_play()
-        if self.croupier.values > 21 and self.player.values > 21: # both exceeded 21
+    def set_winner(self, croupier_cards, croupier_values, player_cards, player_values):
+        if croupier_values > 21 and player_values > 21: # both exceeded 21
             winner = 0
-        elif self.croupier.values > 21 or self.player.values > 21: # someone exceeded 21
-            if self.croupier.values > 21: # Croupier has +21
+        elif croupier_values > 21 or player_values > 21: # someone exceeded 21
+            if croupier_values > 21: # Croupier has +21
                 winner = 1
-            elif self.player.values > 21: # Player has +21
+            elif player_values > 21: # Player has +21
                 winner = -1
-        elif self.croupier.values == 21 and self.player.values == 21: # both have 21
-            if len(self.croupier.cards) == 2 and len(self.player.cards) == 2: # both have blackjack
+        elif croupier_values == 21 and player_values == 21: # both have 21
+            if len(croupier_cards) == 2 and len(player_cards) == 2: # both have blackjack
                 winner = 0
-            elif len(self.croupier.cards) == 2 and len(self.player.cards) != 2: # croupier has blackjack
+            elif len(croupier_cards) == 2 and len(player_cards) != 2: # croupier has blackjack
                 winner = -1
-            elif len(self.croupier.cards) != 2 and len(self.player.cards) == 2: # player has blackjack
+            elif len(croupier_cards) != 2 and len(player_cards) == 2: # player has blackjack
                 winner = 0
-        elif self.croupier.values == self.player.values: # both have same value
+        elif croupier_values == player_values: # both have same value
             winner = 0
-        elif self.croupier.values > self.player.values: # croupier more than player
+        elif croupier_values > player_values: # croupier more than player
             winner = -1
-        elif self.croupier.values < self.player.values: # croupier less than player
+        elif croupier_values < player_values: # croupier less than player
             winner = 1
-        # Show winner in console
-        self.view.show_winner(winner)
+        return winner
+    
+    def result_game(self, winner):
         # Result of the bet
         if winner == 1:
             self.player.balance += self.current_bet
         elif winner == -1:
             self.player.balance -= self.current_bet
 
+    def finish_game(self, croupier_cards, croupier_values, player_cards, player_values):
+        winner = self.set_winner(croupier_cards, croupier_values, player_cards, player_values)
+        self.view.show_winner(winner)
+        self.result_game(winner)
 
     def split(self):
         # Double the bet on different hands
@@ -210,60 +220,17 @@ class BlackjackGame:
         self.croupier_play()
         self.view.show_player_hand(split_player.cards, split_player.values)
         # FINISH GAME HAND1
-        if self.croupier.values > 21 and self.player.values > 21: # both exceeded 21
-            winner = 0
-        elif self.croupier.values > 21 or self.player.values > 21: # someone exceeded 21
-            if self.croupier.values > 21: # Croupier has +21
-                winner = 1
-            elif self.player.values > 21: # Player has +21
-                winner = -1
-        elif self.croupier.values == 21 and self.player.values == 21: # both have 21
-            if len(self.croupier.cards) == 2 and len(self.player.cards) == 2: # both have blackjack
-                winner = 0
-            elif len(self.croupier.cards) == 2 and len(self.player.cards) != 2: # croupier has blackjack
-                winner = -1
-            elif len(self.croupier.cards) != 2 and len(self.player.cards) == 2: # player has blackjack
-                winner = 0
-        elif self.croupier.values == self.player.values: # both have same value
-            winner = 0
-        elif self.croupier.values > self.player.values: # croupier more than player
-            winner = -1
-        elif self.croupier.values < self.player.values: # croupier less than player
-            winner = 1
+        winner = self.set_winner(self.croupier.cards, self.croupier.values, self.player.cards, self.player.values)
         print("--------------")
         print("HAND 1 WINNER:") # show winner on console
         self.view.show_winner(winner)
-        # bet of first hand
-        if winner == 1:
-            self.player.balance += self.current_bet
-        elif winner == -1:
-            self.player.balance -= self.current_bet
+        self.result_game(winner) # bet of first hand
         # FINISH GAME HAND2
-        if self.croupier.values > 21 and split_player.values > 21: # both exceeded 21
-            winner = 0
-        elif self.croupier.values > 21 or split_player.values > 21: # someone exceeded 21
-            if self.croupier.values > 21: # Croupier has +21
-                winner = 1
-            elif split_player.values > 21: # Player has +21
-                winner = -1
-        elif self.croupier.values == 21 and split_player.values == 21: # both have 21
-            if len(self.croupier.cards) == 2 and len(split_player.cards) == 2: # both have blackjack
-                winner = 0
-            elif len(self.croupier.cards) == 2 and len(split_player.cards) != 2: # croupier has blackjack
-                winner = -1
-            elif len(self.croupier.cards) != 2 and len(split_player.cards) == 2: # player has blackjack
-                winner = 0
-        elif self.croupier.values == split_player.values: # both have same value
-            winner = 0
-        elif self.croupier.values > split_player.values: # croupier more than player
-            winner = -1
-        elif self.croupier.values < split_player.values: # croupier less than player
-            winner = 1
+        winner = self.set_winner(self.croupier.cards, self.croupier.values, split_player.cards, split_player.values)
         print("--------------")
         print("HAND 2 WINNER:") # show winner on console
         self.view.show_winner(winner)
-        # bet of second hand
-        if winner == 1:
+        if winner == 1:  # bet of second hand
             self.player.balance += self.current_bet_h2
         elif winner == -1:
             self.player.balance -= self.current_bet_h2
