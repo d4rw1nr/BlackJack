@@ -7,10 +7,24 @@ class BlackjackView:
         print("Welcome to py_BlackJack \n by: d4rw1nr \n Good luck!")
 
     def get_balance(self):
-        self.print_separator()
-        balance = int(input("Set your initial balance amount:  "))
-        self.print_separator()
-        return balance
+        while True:
+            try:
+                self.print_separator()
+                balance = int(input("Set your balance amount:  "))
+                self.print_separator()
+                return balance
+            except ValueError:
+                print("Please enter a number.")
+    
+    def add_balance(self):
+        while True:
+            try:
+                self.print_separator()
+                balance = int(input("How many more chips would you like to add to your balance:  "))
+                self.print_separator()
+                return balance
+            except ValueError:
+                print("Please enter a number.")
     
     def get_initial_bet(self, balance):
         while True:
@@ -30,8 +44,8 @@ class BlackjackView:
 
     def ask_continue_playing(self):
         self.print_separator()
-        continue_playing = input("Continue playing?  Y/N \n").lower()
-        options = ["y", "n"]
+        continue_playing = input("Continue playing = C \nAdd chips = A \nExit = E \n").lower()
+        options = ["c", "a", "e"]
         while True:
             if continue_playing in options:
                 break
