@@ -23,12 +23,22 @@ class BlackjackGame:
         input("Press Enter to start...")
         # loop for the game
         continue_playing = "y"
-        while continue_playing == "y":
-            self.start_game()
-            self.play_game()
-            self.view.show_current_balance(self.player.balance)
-            continue_playing = self.view.ask_continue_playing()
-            self.new_game()
+        while continue_playing != "e":
+            if self.player.balance == 0:
+                print("You have no chips")
+                new_balance = self.view.get_balance()
+                self.player.balance = new_balance
+            else:
+                self.start_game()
+                self.play_game()
+                self.view.show_current_balance(self.player.balance)
+                self.new_game()
+                continue_playing = self.view.ask_continue_playing()
+                if continue_playing == "a":
+                    add_balance = self.view.add_balance()
+                    self.player.balance += add_balance
+
+
 
     def new_game(self):
         self.player.cards = []
