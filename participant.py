@@ -63,4 +63,47 @@ class Player(Participant):
 class Bot(Player):
     def __init__(self) -> None:
         super().__init__()
-        
+
+    def decide_action(self, croupier_cards, player_cards, player_value, allow_double=False, allow_split=False):
+        croupier_value = self.DECK_VALUES[croupier_cards]
+        # PAIRS
+        if (len(player_cards) == 2) and (self.DECK_VALUES[player_cards[0]] == self.DECK_VALUES[player_cards[1]]):
+            if player_cards[0] == "A":
+                return 'sp'
+            elif player_cards[0] == "10":
+                return 's'
+            elif player_cards[0] == "9":
+                if croupier_value in [7, 10, 11]:
+                    return 's'
+                else:
+                    return 'sp'
+            elif player_cards[0] == "8":
+                return 'sp'
+            elif player_cards[0] == "7":
+                if croupier_value >= 8:
+                    return 'h'
+                else:
+                    return 'sp'
+            elif player_cards[0] == "6":
+                if croupier_value >= 7:
+                    return 'h'
+                else:
+                    return 'sp'
+            elif player_cards[0] == "5":
+                if croupier_value >= 10:
+                    return 'h'
+                else:
+                    return 'd'
+            elif player_cards[0] == "4":
+                if croupier_value in [5,6]:
+                    return 'sp'
+                else:
+                    return 'h'
+            elif player_cards[0] in ["2", "3"]:
+                if croupier_value >= 8:
+                    return 'h'
+                else:
+                    return 'sp'
+
+
+                # IMPLEMENTED ALLOWS PENDING
