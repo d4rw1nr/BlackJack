@@ -39,6 +39,11 @@ class Participant:
         self.hand_value()
 
 
+class Croupier(Participant):
+    def __init__(self) -> None:
+        super().__init__()
+
+
 class Player(Participant):
     def __init__(self) -> None:
         super().__init__()
@@ -55,6 +60,7 @@ class Player(Participant):
         else:
             raise ValueError("Balance must be a integer")
 
-class Croupier(Participant):
+class Bot(Player):
     def __init__(self) -> None:
         super().__init__()
+        
