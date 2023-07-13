@@ -69,41 +69,63 @@ class Bot(Player):
         # PAIRS
         if (len(player_cards) == 2) and (self.DECK_VALUES[player_cards[0]] == self.DECK_VALUES[player_cards[1]]):
             if player_cards[0] == "A":
-                return 'sp'
+                if allow_split:
+                    return 'sp'
+                else:
+                    return 'h'
             elif player_cards[0] == "10":
                 return 's'
             elif player_cards[0] == "9":
                 if croupier_value in [7, 10, 11]:
                     return 's'
                 else:
-                    return 'sp'
+                    if allow_split:
+                        return 'sp'
+                    else:
+                        return 'h'
             elif player_cards[0] == "8":
-                return 'sp'
+                if allow_split:
+                    return 'sp'
+                else:
+                    return 'h'
             elif player_cards[0] == "7":
                 if croupier_value >= 8:
                     return 'h'
                 else:
-                    return 'sp'
+                    if allow_split:
+                        return 'sp'
+                    else:
+                        return 'h'
             elif player_cards[0] == "6":
                 if croupier_value >= 7:
                     return 'h'
                 else:
-                    return 'sp'
+                    if allow_split:
+                        return 'sp'
+                    else:
+                        return 'h'
             elif player_cards[0] == "5":
                 if croupier_value >= 10:
                     return 'h'
                 else:
-                    return 'd'
+                    if allow_double:
+                        return 'd'
+                    else:
+                        return 'h'
             elif player_cards[0] == "4":
                 if croupier_value in [5,6]:
-                    return 'sp'
+                    if allow_split:
+                        return 'sp'
+                    else:
+                        return 'h'
                 else:
                     return 'h'
             elif player_cards[0] in ["2", "3"]:
                 if croupier_value >= 8:
                     return 'h'
                 else:
-                    return 'sp'
-
-
-                # IMPLEMENTED ALLOWS PENDING
+                    if allow_split:
+                        return 'sp'
+                    else:
+                        return 'h'
+        
