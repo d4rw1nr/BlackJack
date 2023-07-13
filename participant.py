@@ -128,4 +128,41 @@ class Bot(Player):
                         return 'sp'
                     else:
                         return 'h'
-        
+        # Soft totals
+        elif (len(player_cards) == 2) and ("A" in player_cards):
+            if player_value == 21 or player_value == 20:
+                return 's'
+            elif player_value == 19:
+                if croupier_value == 6:
+                    if allow_double:
+                        return 'd'
+                    else:
+                        return 'h'
+                else:
+                    return 's'
+            elif player_value == 18:
+                if croupier_value <= 6:
+                    if allow_double:
+                        return 'd'
+                    else:
+                        return 'h'
+                elif croupier_value <= 8:
+                    return 's'
+                elif croupier_value >= 9:
+                    return 'h'
+            elif player_value == 17:
+                if croupier_value in [3,4,5,6] and allow_double:
+                    return 'd'
+                else:
+                    return 'h'
+            elif player_value in [16,15]:
+                if croupier_value in [4,5,6] and allow_double:
+                    return 'd'
+                else:
+                    return 'h'
+            elif player_value in [14,13]:
+                if croupier_value in [5,6] and allow_double:
+                    return 'd'
+                else:
+                    return 'h'
+
