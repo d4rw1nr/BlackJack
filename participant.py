@@ -128,7 +128,7 @@ class Bot(Player):
                         return 'sp'
                     else:
                         return 'h'
-        # Soft totals
+        # SOFT TOTALS
         elif (len(player_cards) == 2) and ("A" in player_cards):
             if player_value == 21 or player_value == 20:
                 return 's'
@@ -165,4 +165,8 @@ class Bot(Player):
                     return 'd'
                 else:
                     return 'h'
+        # HARD TOTALS
+        else:
+            if player_value == 21:
+                return 's'
 
