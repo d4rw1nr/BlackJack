@@ -71,6 +71,8 @@ class Bot(Player):
             if player_cards[0] == "A":
                 if allow_split:
                     return 'sp'
+                elif croupier_value in [4,5,6]:
+                    return 's'
                 else:
                     return 'h'
             elif player_cards[0] == "10":
@@ -82,26 +84,32 @@ class Bot(Player):
                     if allow_split:
                         return 'sp'
                     else:
-                        return 'h'
+                        return 's'
             elif player_cards[0] == "8":
                 if allow_split:
                     return 'sp'
-                else:
+                elif croupier_value >= 7:
                     return 'h'
+                else:
+                    return 's'
             elif player_cards[0] == "7":
                 if croupier_value >= 8:
                     return 'h'
                 else:
                     if allow_split:
                         return 'sp'
-                    else:
+                    elif croupier_value >= 7:
                         return 'h'
+                    else:
+                        return 's'
             elif player_cards[0] == "6":
                 if croupier_value >= 7:
                     return 'h'
                 else:
                     if allow_split:
                         return 'sp'
+                    elif croupier_value in [4,5,6]:
+                        return 's'
                     else:
                         return 'h'
             elif player_cards[0] == "5":
@@ -167,6 +175,34 @@ class Bot(Player):
                     return 'h'
         # HARD TOTALS
         else:
-            if player_value == 21:
+            if player_value >= 17:
                 return 's'
+            elif player_value >= 13:
+                if croupier_value >= 7:
+                    return 'h'
+                else:
+                    return 's'
+            elif player_value == 12:
+                if croupier_value in [4,5,6]:
+                    return 's'
+                else:
+                    return 'h'
+            elif player_value == 11:
+                if croupier_value != 11 and allow_double:
+                    return 'd'
+                else:
+                    return 'h'
+            elif player_value == 10:
+                if croupier_value <= 9 and allow_double:
+                    return 'd'
+                else:
+                    return 'h'
+            elif player_value == 9:
+                if croupier_value in [3,4,5,6] and allow_double:
+                    return 'd'
+                else:
+                    return 'h'
+            elif player_value <= 8:
+                return 'h'
+
 
