@@ -7,37 +7,53 @@ import copy
 class BlackjackGame:
     DECK_VALUES = {"A":11, "2": 2, "3":3, "4":4, "5":5, "6":6, "7":7, "8":8, "9":9, "10":10, "J":10, "Q":10, "K":10}
 
-    def __init__(self) -> None:
+    def __init__(self, bot=False, bot_balance=100, bot_bet = 10, bot_games=10) -> None:
         # Modeler
         self.deck = deck.Deck()
         self.croupier = participant.Croupier()
-        self.player = participant.Player()
+        if bot:
+            self.player = participant.Bot()
+            self.player.balance = bot_balance
+            self.bot_bet = bot_bet
+            self.bot_games = bot_games
+        else:
+            self.player = participant.Player()
         # View
         self.view = view.BlackjackView()
 
     # SET THE CONDITIONS OF THE GAME AND THE LOOP FOR ALL THE GAME
     def play(self):
-        self.view.show_welcome_message()
-        balance = self.view.get_balance()
-        self.player.balance = balance
-        input("Press Enter to start...")
-        # loop for the game
-        continue_playing = "y"
-        while continue_playing != "e":
-            if self.player.balance == 0:
-                print("You have no chips")
-                new_balance = self.view.get_balance()
-                self.player.balance = new_balance
-            else:
-                self.start_game()
-                self.play_game()
-                self.view.show_current_balance(self.player.balance)
-                self.new_game()
-                continue_playing = self.view.ask_continue_playing()
-                if continue_playing == "a":
-                    add_balance = self.view.add_balance()
-                    self.player.balance += add_balance
-
+        if isinstance(self.player, participant.Player): # BOT VALIDATION
+            self.view.show_welcome_message()
+            balance = self.view.get_balance()
+            self.player.balance = balance
+            input("Press Enter to start...")
+            # loop for the game
+            continue_playing = "y"
+            while continue_playing != "e":
+                if self.player.balance == 0:
+                    print("You have no chips")
+                    new_balance = self.view.get_balance()
+                    self.player.balance = new_balance
+                else:
+                    self.start_game()
+                    self.play_game()
+                    self.view.show_current_balance(self.player.balance)
+                    self.new_game()
+                    continue_playing = self.view.ask_continue_playing()
+                    if continue_playing == "a":
+                        add_balance = self.view.add_balance()
+                        self.player.balance += add_balance
+        else:
+            while self.bot_games != 0:
+                if self.player.balance < self.bot_bet:
+                    print("No more chips to play")
+                    break
+                else:
+                    self.start_game()
+                    self.play_game()
+                    self.new_game()
+                    self.bot_games -= 1
 
 
     def new_game(self):
@@ -46,14 +62,18 @@ class BlackjackGame:
 
     def start_game(self):
         # Get the initial bet from the player
-        self.current_bet = self.view.get_initial_bet(self.player.balance)
+        if isinstance(self.player, participant.Player):  # BOT VALIDATION
+            self.current_bet = self.view.get_initial_bet(self.player.balance)
+        else:
+            self.current_bet = self.bot_bet
         # Deal de cards
         self.croupier.add_card(self.deck.draw_card())
         self.player.add_card(self.deck.draw_card())
         self.player.add_card(self.deck.draw_card())
-        # Show cards
-        self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
-        self.view.show_player_hand(self.player.cards, self.player.values)
+        # Show cards if player is not a bot
+        if isinstance(self.player, participant.Player): # BOT VALIDATION
+            self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
+            self.view.show_player_hand(self.player.cards, self.player.values)
     
     # ACTIONS OF THE PLAYER
     def hit(self):
@@ -75,7 +95,10 @@ class BlackjackGame:
     # STANDARD FOR THE GAME AFTER THE FIRST HAND
     def game_standard(self):
         while self.player.values <= 21:
-            action = self.view.actions_player(False, False)
+            if isinstance(self.player, participant.Player): # BOT VALIDATION
+                action = self.view.actions_player(False, False)
+            else:
+                action = self.player.decide_action()
             if action == "h": 
                 self.hit()
             elif action == "s":
