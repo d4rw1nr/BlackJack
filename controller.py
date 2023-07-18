@@ -67,8 +67,8 @@ class BlackjackGame:
         else:
             self.current_bet = self.bot_bet
         # Deal de cards
-        self.croupier.add_card(self.deck.draw_card())
         self.player.add_card(self.deck.draw_card())
+        self.croupier.add_card(self.deck.draw_card())
         self.player.add_card(self.deck.draw_card())
         # Show cards if player is not a bot
         if isinstance(self.player, participant.Player): # BOT VALIDATION
@@ -98,7 +98,8 @@ class BlackjackGame:
             if isinstance(self.player, participant.Player): # BOT VALIDATION
                 action = self.view.actions_player(False, False)
             else:
-                action = self.player.decide_action()
+                action = self.player.decide_action(self.croupier.cards, self.player.cards, self.player.values, allow_double=False, allow_split=False)
+            # decition in action based on player or bot
             if action == "h": 
                 self.hit()
             elif action == "s":
