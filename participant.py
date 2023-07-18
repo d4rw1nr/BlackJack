@@ -64,7 +64,7 @@ class Bot(Player):
     def __init__(self) -> None:
         super().__init__()
 
-    def decide_action(self, croupier_cards, player_cards, player_value, allow_double=False, allow_split=False):
+    def decide_action(self, croupier_cards, player_cards, player_value, allow_double=False, allow_split=False): #BlackJack Basic Strategy
         croupier_value = self.DECK_VALUES[croupier_cards]
         # PAIRS
         if (len(player_cards) == 2) and (self.DECK_VALUES[player_cards[0]] == self.DECK_VALUES[player_cards[1]]):
