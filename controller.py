@@ -23,7 +23,17 @@ class BlackjackGame:
 
     # SET THE CONDITIONS OF THE GAME AND THE LOOP FOR ALL THE GAME
     def play(self):
-        if isinstance(self.player, participant.Player): # BOT VALIDATION
+        if isinstance(self.player, participant.Bot): # BOT VALIDATION
+            while self.bot_games != 0:
+                if self.player.balance < self.bot_bet:
+                    print("No more chips to play")
+                    break
+                else:
+                    self.start_game()
+                    self.play_game()
+                    self.new_game()
+                    self.bot_games -= 1
+        else:
             self.view.show_welcome_message()
             balance = self.view.get_balance()
             self.player.balance = balance
@@ -44,16 +54,6 @@ class BlackjackGame:
                     if continue_playing == "a":
                         add_balance = self.view.add_balance()
                         self.player.balance += add_balance
-        else:
-            while self.bot_games != 0:
-                if self.player.balance < self.bot_bet:
-                    print("No more chips to play")
-                    break
-                else:
-                    self.start_game()
-                    self.play_game()
-                    self.new_game()
-                    self.bot_games -= 1
 
 
     def new_game(self):
@@ -62,16 +62,16 @@ class BlackjackGame:
 
     def start_game(self):
         # Get the initial bet from the player
-        if isinstance(self.player, participant.Player):  # BOT VALIDATION
-            self.current_bet = self.view.get_initial_bet(self.player.balance)
-        else:
+        if isinstance(self.player, participant.Bot):  # BOT VALIDATION
             self.current_bet = self.bot_bet
+        else:
+            self.current_bet = self.view.get_initial_bet(self.player.balance)
         # Deal de cards
         self.player.add_card(self.deck.draw_card())
         self.croupier.add_card(self.deck.draw_card())
         self.player.add_card(self.deck.draw_card())
         # Show cards if player is not a bot
-        if isinstance(self.player, participant.Player): # BOT VALIDATION
+        if isinstance(self.player, participant.Player) and not isinstance(self.player, participant.Bot): # BOT VALIDATION
             self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
             self.view.show_player_hand(self.player.cards, self.player.values)
     
@@ -95,10 +95,10 @@ class BlackjackGame:
     # STANDARD FOR THE GAME AFTER THE FIRST HAND
     def game_standard(self):
         while self.player.values <= 21:
-            if isinstance(self.player, participant.Player): # BOT VALIDATION
-                action = self.view.actions_player(False, False)
-            else:
+            if isinstance(self.player, participant.Bot): # BOT VALIDATION
                 action = self.player.decide_action(self.croupier.cards, self.player.cards, self.player.values, allow_double=False, allow_split=False)
+            else:
+                action = self.view.actions_player(False, False)
             # decision in action based on player or bot
             if action == "h": 
                 self.hit()
@@ -110,10 +110,10 @@ class BlackjackGame:
     def play_game(self):
         if (self.DECK_VALUES[self.player.cards[0]] == self.DECK_VALUES[self.player.cards[1]]) and (self.player.balance >= self.current_bet*2):
             # Player choice on pairs with enough balance
-            if isinstance(self.player, participant.Player): # BOT VALIDATION
-                action = self.view.actions_player(True, True)
-            else:
+            if isinstance(self.player, participant.Bot): # BOT VALIDATION
                 action = self.player.decide_action(self.croupier.cards, self.player.cards, self.player.values, allow_double=True, allow_split=True)
+            else:
+                action = self.view.actions_player(True, True)
             # decision in action based on player or bot
             if action == 'h': #hit
                 self.hit()
@@ -133,15 +133,15 @@ class BlackjackGame:
         else:
             # Player choice on regular cards and validation of the amount
             if self.player.balance >= self.current_bet*2:
-                if isinstance(self.player, participant.Player): # BOT VALIDATION
-                    action = self.view.actions_player(True, False)
-                else:
+                if isinstance(self.player, participant.Bot): # BOT VALIDATION
                     action = self.player.decide_action(self.croupier.cards, self.player.cards, self.player.values, allow_double=True, allow_split=False)
-            else: 
-                if isinstance(self.player, participant.Player): # BOT VALIDATION
-                    action = self.view.actions_player(False, False)
                 else:
+                    action = self.view.actions_player(True, False)
+            else: 
+                if isinstance(self.player, participant.Bot): # BOT VALIDATION
                     action = self.player.decide_action(self.croupier.cards, self.player.cards, self.player.values, allow_double=False, allow_split=False)
+                else:
+                    action = self.view.actions_player(False, False)
             # Actions of the player
             if action == 'h': #hit
                 self.hit()
@@ -218,15 +218,15 @@ class BlackjackGame:
         while self.player.values <= 21:
             # Validation of the balance for double
             if self.player.balance >= ((self.current_bet*2) + self.current_bet_h2):
-                if isinstance(self.player, participant.Player): # BOT VALIDATION
-                    action = self.view.actions_player(True, False)
-                else:
+                if isinstance(self.player, participant.Bot): # BOT VALIDATION
                     action = self.player.decide_action(self.croupier.cards, self.player.cards, self.player.values, allow_double=True, allow_split=False)
-            else: 
-                if isinstance(self.player, participant.Player): # BOT VALIDATION
-                    action = self.view.actions_player(False, False)
                 else:
+                    action = self.view.actions_player(True, False)
+            else: 
+                if isinstance(self.player, participant.Bot): # BOT VALIDATION
                     action = self.player.decide_action(self.croupier.cards, self.player.cards, self.player.values, allow_double=False, allow_split=False)
+                else:
+                    action = self.view.actions_player(False, False)
             # Actions of the player
             if action == "h": 
                 self.hit()
@@ -247,15 +247,15 @@ class BlackjackGame:
         while split_player.values <= 21:
             # Validation for double
             if self.player.balance >= (self.current_bet + (self.current_bet_h2*2)):
-                if isinstance(self.player, participant.Player): # BOT VALIDATION
-                    action = self.view.actions_player(True, False)
-                else:
+                if isinstance(self.player, participant.Bot): # BOT VALIDATION
                     action = self.player.decide_action(self.croupier.cards, self.player.cards, self.player.values, allow_double=True, allow_split=False)
-            else:
-                if isinstance(self.player, participant.Player): # BOT VALIDATION
-                    action = self.view.actions_player(False, False)
                 else:
+                    action = self.view.actions_player(True, False)
+            else:
+                if isinstance(self.player, participant.Bot): # BOT VALIDATION
                     action = self.player.decide_action(self.croupier.cards, self.player.cards, self.player.values, allow_double=False, allow_split=False)
+                else:
+                    action = self.view.actions_player(False, False)
             # ACtion of the player/bot
             if action == "h":
                 split_player.add_card(self.deck.draw_card())
