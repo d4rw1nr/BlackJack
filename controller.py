@@ -31,6 +31,7 @@ class BlackjackGame:
                 else:
                     self.start_game()
                     self.play_game()
+                    self.view.show_current_balance(self.player.balance)
                     self.new_game()
                     self.bot_games -= 1
         else:
