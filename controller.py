@@ -167,7 +167,7 @@ class BlackjackGame:
 
     def set_winner(self, croupier_cards, croupier_values, player_cards, player_values):
         if croupier_values > 21 and player_values > 21: # both exceeded 21
-            winner = 0
+            winner = -1
         elif croupier_values > 21 or player_values > 21: # someone exceeded 21
             if croupier_values > 21: # Croupier has +21
                 winner = 1
