@@ -91,7 +91,7 @@ class BlackjackView:
         if winner == -1:
             print("House Wins")
         elif winner == 0:
-            print("Draw")
+            print("Push")
         elif winner == 1:
             print("Player Wins")
         else: print('ERROR!')
