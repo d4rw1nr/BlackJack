@@ -158,6 +158,7 @@ class BlackjackGame:
                 self.croupier_play()
                 self.finish_game(self.croupier.cards, self.croupier.values, self.player.cards, self.player.values)
 
+    # THE CROUPIER PLAYS HIS HAND
     def croupier_play(self):
         while self.croupier.values < 17:
             self.croupier.add_card(self.deck.draw_card())
@@ -165,6 +166,7 @@ class BlackjackGame:
         self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
         self.view.show_player_hand(self.player.cards, self.player.values)
 
+    # RETURN WINNER -1=HOUSE_WINS 0=PUSH 1=PLAYER_WINS
     def set_winner(self, croupier_cards, croupier_values, player_cards, player_values):
         if croupier_values > 21 and player_values > 21: # both exceeded 21
             winner = -1
@@ -188,6 +190,7 @@ class BlackjackGame:
             winner = 1
         return winner
     
+    # CONTROLS THE PAYMENTS
     def result_game(self, winner):
         # Result of the bet
         if winner == 1:
@@ -200,6 +203,7 @@ class BlackjackGame:
         self.view.show_winner(winner)
         self.result_game(winner)
 
+    # GAME AFTER A SPLIT
     def split(self):
         # Double the bet on different hands
         self.current_bet_h2 = self.current_bet
