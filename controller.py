@@ -168,20 +168,18 @@ class BlackjackGame:
 
     # RETURN WINNER -1=HOUSE_WINS 0=PUSH 1=PLAYER_WINS
     def set_winner(self, croupier_cards, croupier_values, player_cards, player_values):
-        if croupier_values > 21 and player_values > 21: # both exceeded 21
-            winner = -1
-        elif croupier_values > 21 or player_values > 21: # someone exceeded 21
-            if croupier_values > 21: # Croupier has +21
+        if croupier_values > 21 or player_values > 21: # someone exceeded 21
+            if player_values > 21: # Player has +21
+                winner = -2
+            elif croupier_values > 21: # Croupier has +21
                 winner = 1
-            elif player_values > 21: # Player has +21
-                winner = -1
         elif croupier_values == 21 and player_values == 21: # both have 21
             if len(croupier_cards) == 2 and len(player_cards) == 2: # both have blackjack
                 winner = 0
             elif len(croupier_cards) == 2 and len(player_cards) != 2: # croupier has blackjack
                 winner = -1
             elif len(croupier_cards) != 2 and len(player_cards) == 2: # player has blackjack
-                winner = 0
+                winner = 2
         elif croupier_values == player_values: # both have same value
             winner = 0
         elif croupier_values > player_values: # croupier more than player
@@ -191,11 +189,15 @@ class BlackjackGame:
         return winner
     
     # CONTROLS THE PAYMENTS
-    def result_game(self, winner):
+    def result_game(self, winner, split=False):
         # Result of the bet
-        if winner == 1:
+        if winner == 2 and split:
             self.player.balance += self.current_bet
-        elif winner == -1:
+        elif winner == 2:
+            self.player.balance += (self.current_bet + (self.current_bet/2))
+        elif winner == 1:
+            self.player.balance += self.current_bet
+        elif winner <= -1:
             self.player.balance -= self.current_bet
 
     def finish_game(self, croupier_cards, croupier_values, player_cards, player_values):
@@ -285,13 +287,13 @@ class BlackjackGame:
         print("--------------")
         print("HAND 1 WINNER:") # show winner on console
         self.view.show_winner(winner)
-        self.result_game(winner) # bet of first hand
+        self.result_game(winner, split=True) # bet of first hand
         # FINISH GAME HAND2
         winner = self.set_winner(self.croupier.cards, self.croupier.values, split_player.cards, split_player.values)
         print("--------------")
         print("HAND 2 WINNER:") # show winner on console
         self.view.show_winner(winner)
-        if winner == 1:  # bet of second hand
+        if winner >= 1:  # bet of second hand
             self.player.balance += self.current_bet_h2
-        elif winner == -1:
+        elif winner <= -1:
             self.player.balance -= self.current_bet_h2

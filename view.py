@@ -88,11 +88,15 @@ class BlackjackView:
     
     def show_winner(self, winner):
         self.print_separator()
-        if winner == -1:
+        if winner == -2:
+            print("Busted")
+        elif winner == -1:
             print("House Wins")
         elif winner == 0:
             print("Push")
         elif winner == 1:
             print("Player Wins")
+        elif winner == 2:
+            print("BlackJack!")
         else: print('ERROR!')
         self.print_separator()
