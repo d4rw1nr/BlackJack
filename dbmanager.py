@@ -117,11 +117,43 @@ class DBManager:
     def disconnect(self):
         if self.connection is not None:
             self.connection.close()
-            self.connection = None
     
     # PUSH THE DATA TO THE DB
+    def insert_games(self): # First part of insert in the games table
+        if self.connection is None: #Cheking if the connextion is active
+            self.connect()
+        
+        try: # Inserting the data in the table games
+            cursor = self.connection.cursor()
+            insert = sql.SQL("INSERT INTO games ({}) VALUES ({}) RETURNING game_id").format(
+                sql.SQL(', ').join(map(sql.Identifier, self.games.keys())),
+                sql.SQL(', ').join(map(sql.Placeholder, self.games.keys()))
+            )
+            cursor.execute(insert, self.games)
+            game_id = cursor.fetchone()[0] # return the game_id
+            return game_id
+        except (Exception, psycopg2.DatabaseError) as e:
+            print(e)
+        finally:
+            if cursor is not None:
+                cursor.close()
+    
+    
+    def insert_games_final_time_balance(self, game_id:int): # Second part of insert in the games table
+        if self.connection is None: #Cheking if the connection is active
+            self.connect()
 
-
-conn = DBManager()
-conn.connect()
-conn.disconnect()
+        try: # Inserting end_time and final_balance in the games table
+            cursor = self.connection.cursor()
+            insert = """
+            UPDATE games 
+            SET end_time = %s, final_balance = %s
+            WHERE game_id = %s
+            """
+            values = (self.games['end_time'], self.games['final_balance'], game_id)
+            cursor.execute(insert, values)
+        except (Exception, psycopg2.DatabaseError) as e:
+            print(e)
+        finally:
+            if cursor is not None:
+                cursor.close()
