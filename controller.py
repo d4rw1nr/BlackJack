@@ -7,7 +7,7 @@ import copy
 class BlackjackGame:
     DECK_VALUES = {"A":11, "2": 2, "3":3, "4":4, "5":5, "6":6, "7":7, "8":8, "9":9, "10":10, "J":10, "Q":10, "K":10}
 
-    def __init__(self, bot=False, bot_balance=100, bot_bet = 10, bot_games=10) -> None:
+    def __init__(self, bot=False, bot_balance=100, bot_bet = 10, bot_rounds=10) -> None:
         # Modeler
         self.deck = deck.Deck()
         self.croupier = participant.Croupier()
@@ -15,7 +15,7 @@ class BlackjackGame:
             self.player = participant.Bot()
             self.player.balance = bot_balance
             self.bot_bet = bot_bet
-            self.bot_games = bot_games
+            self.bot_rounds = bot_rounds
         else:
             self.player = participant.Player()
         # View
@@ -24,7 +24,7 @@ class BlackjackGame:
     # SET THE CONDITIONS OF THE GAME AND THE LOOP FOR ALL THE GAME
     def play(self):
         if isinstance(self.player, participant.Bot): # BOT VALIDATION
-            while self.bot_games != 0:
+            while self.bot_rounds != 0:
                 if self.player.balance < self.bot_bet:
                     print("No more chips to play")
                     break
