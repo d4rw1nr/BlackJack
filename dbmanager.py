@@ -119,8 +119,9 @@ class DBManager:
             self.connection.close()
     
     # PUSH THE DATA TO THE DB
+    # Inserts for games table
     def insert_games(self): # First part of insert in the games table
-        if self.connection is None: #Cheking if the connextion is active
+        if self.connection is None: #Cheking if the connection is active
             self.connect()
         
         try: # Inserting the data in the table games
@@ -138,8 +139,8 @@ class DBManager:
             if cursor is not None:
                 cursor.close()
     
-    
-    def insert_games_final_time_balance(self, game_id:int): # Second part of insert in the games table
+
+    def insert_games_final(self, game_id:int): # Second part of insert in the games table
         if self.connection is None: #Cheking if the connection is active
             self.connect()
 
@@ -151,6 +152,47 @@ class DBManager:
             WHERE game_id = %s
             """
             values = (self.games['end_time'], self.games['final_balance'], game_id)
+            cursor.execute(insert, values)
+        except (Exception, psycopg2.DatabaseError) as e:
+            print(e)
+        finally:
+            if cursor is not None:
+                cursor.close()
+
+    # Inserts for rounds table
+    def insert_rounds(self, game_id): # First part of insert in the rounds table
+        if self.connection is None: #Cheking if the connection is active
+            self.connect()
+
+        try:
+            cursor = self.connection.cursor()
+            insert = sql.SQL("INSERT INTO rounds ({}) VALUES ({}) RETURNING round_id").format(
+                sql.SQL(', ').join(map(sql.Identifier, self.rounds.keys())),
+                sql.SQL(', ').join(map(sql.Placeholder, self.rounds.keys()))
+            )
+            cursor.execute(insert, self.rounds)
+            round_id = cursor.fetchone()[0] # return the game_id
+            return round_id
+        except (Exception, psycopg2.DatabaseError) as e:
+            print(e)
+        finally:
+            if cursor is not None:
+                cursor.close()
+    
+    def insert_rounds_final(self, round_id):
+        if self.connection is None: #Cheking if the connection is active
+            self.connect()
+        
+        try: # Inserting end_time and final_balance in the games table
+            cursor = self.connection.cursor()
+            insert = """
+            UPDATE rounds 
+            SET p_final_cards = %s, c_final_cards = %s, final_balance = %s, final_bet = %s, outcome = %s
+            WHERE round_id = %s
+            """
+            values = (self.rounds['p_final_cards'], self.rounds['c_final_cards'],
+                    self.rounds['final_balance'], self.rounds['final_bet'], 
+                    self.rounds['outcome'], round_id)
             cursor.execute(insert, values)
         except (Exception, psycopg2.DatabaseError) as e:
             print(e)
