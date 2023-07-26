@@ -160,7 +160,7 @@ class DBManager:
                 cursor.close()
 
     # Inserts for rounds table
-    def insert_rounds(self, game_id): # First part of insert in the rounds table
+    def insert_rounds(self): # First part of insert in the rounds table
         if self.connection is None: #Cheking if the connection is active
             self.connect()
 
@@ -171,7 +171,7 @@ class DBManager:
                 sql.SQL(', ').join(map(sql.Placeholder, self.rounds.keys()))
             )
             cursor.execute(insert, self.rounds)
-            round_id = cursor.fetchone()[0] # return the game_id
+            round_id = cursor.fetchone()[0] # return the round_id
             return round_id
         except (Exception, psycopg2.DatabaseError) as e:
             print(e)
@@ -179,11 +179,11 @@ class DBManager:
             if cursor is not None:
                 cursor.close()
     
-    def insert_rounds_final(self, round_id):
+    def insert_rounds_final(self, round_id): # Second part of insert in the rounds table
         if self.connection is None: #Cheking if the connection is active
             self.connect()
         
-        try: # Inserting end_time and final_balance in the games table
+        try: # Inserting in the rounds table
             cursor = self.connection.cursor()
             insert = """
             UPDATE rounds 
@@ -194,6 +194,24 @@ class DBManager:
                     self.rounds['final_balance'], self.rounds['final_bet'], 
                     self.rounds['outcome'], round_id)
             cursor.execute(insert, values)
+        except (Exception, psycopg2.DatabaseError) as e:
+            print(e)
+        finally:
+            if cursor is not None:
+                cursor.close()
+
+    # Inserts for rounds table
+    def insert_moves(self):
+        if self.connection is None: #Cheking if the connection is active
+            self.connect()
+
+        try:
+            cursor = self.connection.cursor()
+            insert = sql.SQL("INSERT INTO moves ({}) VALUES ({})").format(
+                sql.SQL(', ').join(map(sql.Identifier, self.moves.keys())),
+                sql.SQL(', ').join(map(sql.Placeholder, self.moves.keys()))
+            )
+            cursor.execute(insert, self.moves)
         except (Exception, psycopg2.DatabaseError) as e:
             print(e)
         finally:
