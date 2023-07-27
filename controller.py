@@ -1,8 +1,10 @@
 import deck
 import participant
 import view
+import dbmanager
 
 import copy
+from datetime import datetime 
 
 class BlackjackGame:
     DECK_VALUES = {"A":11, "2": 2, "3":3, "4":4, "5":5, "6":6, "7":7, "8":8, "9":9, "10":10, "J":10, "Q":10, "K":10}
@@ -20,10 +22,19 @@ class BlackjackGame:
             self.player = participant.Player()
         # View
         self.view = view.BlackjackView()
+        # DB Manager
+        self.db_manager = dbmanager.DBManager()
+        self.game_id = 0
+        self.round_id = 0
 
     # SET THE CONDITIONS OF THE GAME AND THE LOOP FOR ALL THE GAME
     def play(self):
+        self.db_manager.games_update('start_time', datetime.now()) # Register games start_time
         if isinstance(self.player, participant.Bot): # BOT VALIDATION
+            self.db_manager.games_update('bot', True) # Register games start_time
+            self.db_manager.games_update('initial_balance', self.player.balance) # Register games initial_balance
+            game_id = self.db_manager.insert_games()
+            self.game_id = game_id
             while self.bot_rounds != 0:
                 if self.player.balance < self.bot_bet:
                     print("No more chips to play")
@@ -33,11 +44,15 @@ class BlackjackGame:
                     self.play_game()
                     self.view.show_current_balance(self.player.balance)
                     self.new_game()
-                    self.bot_games -= 1
+                    self.bot_rounds -= 1        
         else:
             self.view.show_welcome_message()
             balance = self.view.get_balance()
             self.player.balance = balance
+            self.db_manager.games_update('bot', False) # Register games start_time
+            self.db_manager.games_update('initial_balance', self.player.balance) # Register games initial_balance
+            game_id = self.db_manager.insert_games() # Register games1
+            self.game_id = game_id
             input("Press Enter to start...")
             # loop for the game
             continue_playing = "y"
@@ -55,6 +70,10 @@ class BlackjackGame:
                     if continue_playing == "a":
                         add_balance = self.view.add_balance()
                         self.player.balance += add_balance
+        self.db_manager.games_update('end_time', datetime.now()) # Register games end_time
+        self.db_manager.games_update('final_balance', self.player.balance) # Register games final_balance
+        self.db_manager.insert_games_final(self.game_id) # Register games2
+        self.db_manager.disconnect # Close connection to db
 
 
     def new_game(self):
