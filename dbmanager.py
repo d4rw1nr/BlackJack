@@ -35,48 +35,33 @@ class DBManager:
     # GETTERS AND SETTERS
     @property
     def games(self):
-        return self._games
+        return self._games.copy()
     
-    @games.setter
-    def games(self, attributes):
-        if isinstance(attributes, dict):
-            for key, value in attributes:
-                if key in self._games:
-                    self._games[key] = value
-                else:
-                    raise ValueError(f"{key} isn't a valid key for 'games")
+    def games_update(self, key, value):
+        if key in self._games:
+            self._games[key] = value
         else:
-            raise ValueError("Attributes must be in a dictionary")
+            raise ValueError(f"{key} isn't a valid key for 'games'")
 
     @property
     def rounds(self):
-        return self._rounds
+        return self._rounds.copy()
     
-    @rounds.setter
-    def rounds(self, attributes):
-        if isinstance(attributes, dict):
-            for key, value in attributes:
-                if key in self._rounds:
-                    self._rounds[key] = value
-                else:
-                    raise ValueError(f"{key} isn't a valid key for 'rounds")
+    def rounds_update(self, key, value):
+        if key in self._rounds:
+            self._rounds[key] = value
         else:
-            raise ValueError("Attributes must be in a dictionary")
+            raise ValueError(f"{key} isn't a valid key for 'rounds'")
 
     @property
     def moves(self):
-        return self._moves
+        return self._moves.copy()
     
-    @moves.setter
-    def moves(self, attributes):
-        if isinstance(attributes, dict):
-            for key, value in attributes:
-                if key in self._moves:
-                    self._moves[key] = value
-                else:
-                    raise ValueError(f"{key} isn't a valid key for 'moves")
+    def moves_update(self, key:str, value):
+        if key in self._moves:
+            self._moves[key] = value
         else:
-            raise ValueError("Attributes must be in a dictionary")
+            raise ValueError(f"{key} isn't a valid key for 'moves'")
 
     @property
     def game_id(self):
@@ -126,15 +111,17 @@ class DBManager:
         
         try: # Inserting the data in the table games
             cursor = self.connection.cursor()
-            insert = sql.SQL("INSERT INTO games ({}) VALUES ({}) RETURNING game_id").format(
+            insert = sql.SQL("INSERT INTO main.games ({}) VALUES ({}) RETURNING game_id").format(
                 sql.SQL(', ').join(map(sql.Identifier, self.games.keys())),
                 sql.SQL(', ').join(map(sql.Placeholder, self.games.keys()))
             )
             cursor.execute(insert, self.games)
             game_id = cursor.fetchone()[0] # return the game_id
+            self.connection.commit() # <-- COMMIT of the transaction
             return game_id
         except (Exception, psycopg2.DatabaseError) as e:
             print(e)
+            self.connection.rollback() # <-- ROLLBACK of the transaction in case of error
         finally:
             if cursor is not None:
                 cursor.close()
@@ -147,14 +134,16 @@ class DBManager:
         try: # Inserting end_time and final_balance in the games table
             cursor = self.connection.cursor()
             insert = """
-            UPDATE games 
+            UPDATE main.games 
             SET end_time = %s, final_balance = %s
             WHERE game_id = %s
             """
             values = (self.games['end_time'], self.games['final_balance'], game_id)
             cursor.execute(insert, values)
+            self.connection.commit() # <-- COMMIT of the transaction
         except (Exception, psycopg2.DatabaseError) as e:
             print(e)
+            self.connection.rollback() # <-- ROLLBACK of the transaction in case of error
         finally:
             if cursor is not None:
                 cursor.close()
@@ -166,15 +155,17 @@ class DBManager:
 
         try:
             cursor = self.connection.cursor()
-            insert = sql.SQL("INSERT INTO rounds ({}) VALUES ({}) RETURNING round_id").format(
+            insert = sql.SQL("INSERT INTO main.rounds ({}) VALUES ({}) RETURNING round_id").format(
                 sql.SQL(', ').join(map(sql.Identifier, self.rounds.keys())),
                 sql.SQL(', ').join(map(sql.Placeholder, self.rounds.keys()))
             )
             cursor.execute(insert, self.rounds)
             round_id = cursor.fetchone()[0] # return the round_id
+            self.connection.commit() # <-- COMMIT of the transaction
             return round_id
         except (Exception, psycopg2.DatabaseError) as e:
             print(e)
+            self.connection.rollback() # <-- ROLLBACK of the transaction in case of error
         finally:
             if cursor is not None:
                 cursor.close()
@@ -186,7 +177,7 @@ class DBManager:
         try: # Inserting in the rounds table
             cursor = self.connection.cursor()
             insert = """
-            UPDATE rounds 
+            UPDATE main.rounds 
             SET p_final_cards = %s, c_final_cards = %s, final_balance = %s, final_bet = %s, outcome = %s
             WHERE round_id = %s
             """
@@ -194,8 +185,10 @@ class DBManager:
                     self.rounds['final_balance'], self.rounds['final_bet'], 
                     self.rounds['outcome'], round_id)
             cursor.execute(insert, values)
+            self.connection.commit() # <-- COMMIT of the transaction
         except (Exception, psycopg2.DatabaseError) as e:
             print(e)
+            self.connection.rollback() # <-- ROLLBACK of the transaction in case of error
         finally:
             if cursor is not None:
                 cursor.close()
@@ -207,13 +200,15 @@ class DBManager:
 
         try:
             cursor = self.connection.cursor()
-            insert = sql.SQL("INSERT INTO moves ({}) VALUES ({})").format(
+            insert = sql.SQL("INSERT INTO main.moves ({}) VALUES ({})").format(
                 sql.SQL(', ').join(map(sql.Identifier, self.moves.keys())),
                 sql.SQL(', ').join(map(sql.Placeholder, self.moves.keys()))
             )
             cursor.execute(insert, self.moves)
+            self.connection.commit() # <-- COMMIT of the transaction
         except (Exception, psycopg2.DatabaseError) as e:
             print(e)
+            self.connection.rollback() # <-- ROLLBACK of the transaction in case of error
         finally:
             if cursor is not None:
                 cursor.close()
