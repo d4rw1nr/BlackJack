@@ -44,7 +44,7 @@ class BlackjackGame:
                     self.play_game()
                     self.view.show_current_balance(self.player.balance)
                     self.new_game()
-                    self.bot_rounds -= 1        
+                    self.bot_rounds -= 1  
         else:
             self.view.show_welcome_message()
             balance = self.view.get_balance()
@@ -94,6 +94,11 @@ class BlackjackGame:
         if isinstance(self.player, participant.Player) and not isinstance(self.player, participant.Bot): # BOT VALIDATION
             self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
             self.view.show_player_hand(self.player.cards, self.player.values)
+        # DB MANAGER
+        self.db_manager.rounds('p_initial_cards', self.player.cards) # Register rounds p_initial_cards
+        self.db_manager.rounds('c_initial_cards', self.croupier.cards) # Register rounds c_initial_cards
+        self.db_manager.rounds('initial_balance', self.player.balance) # Register rounds initial_balance
+        self.db_manager.rounds('initial_bet', self.current_bet) # Register rounds initial_bet
     
     # ACTIONS OF THE PLAYER
     def hit(self):
