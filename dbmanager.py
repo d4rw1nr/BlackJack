@@ -22,7 +22,11 @@ class DBManager:
                         'final_balance':None,
                         'initial_bet':None,
                         'final_bet':None,
-                        'outcome':None}
+                        'outcome':None,
+                        'split':None,
+                        'h2_cards':None,
+                        'h2_bet':None,
+                        'h2_outcome':None}
         self._moves = {'round_id':None,
                         'move_number':None,
                         'move':None,
@@ -178,12 +182,14 @@ class DBManager:
             cursor = self.connection.cursor()
             insert = """
             UPDATE main.rounds 
-            SET p_final_cards = %s, c_final_cards = %s, final_balance = %s, final_bet = %s, outcome = %s
+            SET p_final_cards = %s, c_final_cards = %s, final_balance = %s, final_bet = %s, outcome = %s,
+            split = %s, h2_cards = %s, h2_bet = %s, h2_outcome = %s
             WHERE round_id = %s
             """
             values = (self.rounds['p_final_cards'], self.rounds['c_final_cards'],
-                    self.rounds['final_balance'], self.rounds['final_bet'], 
-                    self.rounds['outcome'], round_id)
+                    self.rounds['final_balance'], self.rounds['final_bet'], self.rounds['outcome'], 
+                    self.rounds['split'], self.rounds['h2_cards'], self.rounds['h2_bet'], self.rounds['h2_outcome'],
+                    round_id)
             cursor.execute(insert, values)
             self.connection.commit() # <-- COMMIT of the transaction
         except (Exception, psycopg2.DatabaseError) as e:
