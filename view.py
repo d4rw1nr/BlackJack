@@ -80,8 +80,8 @@ class BlackjackView:
             options.append("d")
             prompt += "   D = Double"
         if allow_split:
-            options.append("sp")
-            prompt += "   SP = Split"
+            options.append("p")
+            prompt += "   P = Split"
         
         prompt += " \n"
         return self.get_action(options, prompt)

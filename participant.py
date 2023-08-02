@@ -70,7 +70,7 @@ class Bot(Player):
         if (len(player_cards) == 2) and (self.DECK_VALUES[player_cards[0]] == self.DECK_VALUES[player_cards[1]]):
             if player_cards[0] == "A":
                 if allow_split:
-                    return 'sp'
+                    return 'p'
                 elif croupier_value in [4,5,6]:
                     return 's'
                 else:
@@ -82,12 +82,12 @@ class Bot(Player):
                     return 's'
                 else:
                     if allow_split:
-                        return 'sp'
+                        return 'p'
                     else:
                         return 's'
             elif player_cards[0] == "8":
                 if allow_split:
-                    return 'sp'
+                    return 'p'
                 elif croupier_value >= 7:
                     return 'h'
                 else:
@@ -97,7 +97,7 @@ class Bot(Player):
                     return 'h'
                 else:
                     if allow_split:
-                        return 'sp'
+                        return 'p'
                     elif croupier_value >= 7:
                         return 'h'
                     else:
@@ -107,7 +107,7 @@ class Bot(Player):
                     return 'h'
                 else:
                     if allow_split:
-                        return 'sp'
+                        return 'p'
                     elif croupier_value in [4,5,6]:
                         return 's'
                     else:
@@ -123,7 +123,7 @@ class Bot(Player):
             elif player_cards[0] == "4":
                 if croupier_value in [5,6]:
                     if allow_split:
-                        return 'sp'
+                        return 'p'
                     else:
                         return 'h'
                 else:
@@ -133,7 +133,7 @@ class Bot(Player):
                     return 'h'
                 else:
                     if allow_split:
-                        return 'sp'
+                        return 'p'
                     else:
                         return 'h'
         # SOFT TOTALS

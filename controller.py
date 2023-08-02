@@ -160,7 +160,7 @@ class BlackjackGame:
                 self.double()
                 self.croupier_play()
                 self.finish_game(self.croupier.cards, self.croupier.values, self.player.cards, self.player.values)
-            elif action == 'sp': #split
+            elif action == 'p': #split
                 self.split()
         else:
             # Player choice on regular cards and validation of the amount
