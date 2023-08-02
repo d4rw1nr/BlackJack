@@ -48,6 +48,9 @@ class BlackjackGame:
                     self.round_id = self.db_manager.insert_rounds() # INSERT 1
                     #---------
                     self.play_game()
+                    #DB MANAGER
+                    self.db_manager.insert_rounds_final(self.round_id) # Register rounds round_number
+                    #---------
                     self.view.show_current_balance(self.player.balance)
                     self.new_game()
                     self.bot_rounds -= 1
@@ -69,7 +72,15 @@ class BlackjackGame:
                     self.player.balance = new_balance
                 else:
                     self.start_game()
+                    #DB MANAGER
+                    round_number += 1 # Register rounds round_number
+                    self.db_manager.rounds_update('round_number', round_number) # Register rounds round_number
+                    self.round_id = self.db_manager.insert_rounds() # INSERT 1
+                    #---------
                     self.play_game()
+                    #DB MANAGER
+                    self.db_manager.insert_rounds_final(self.round_id) # Register rounds round_number
+                    #---------
                     self.view.show_current_balance(self.player.balance)
                     self.new_game()
                     continue_playing = self.view.ask_continue_playing()
@@ -103,7 +114,9 @@ class BlackjackGame:
         # DB MANAGER
         self.db_manager.rounds_update('game_id', self.game_id) # Register rounds game_id
         self.db_manager.rounds_update('p_initial_cards', self.player.cards) # Register rounds p_initial_cards
+        self.db_manager.rounds_update('p_initial_value', self.player.values) # Register rounds p_initial_value
         self.db_manager.rounds_update('c_initial_cards', self.croupier.cards) # Register rounds c_initial_cards
+        self.db_manager.rounds_update('c_initial_value', self.croupier.values) # Register rounds c_initial_value
         self.db_manager.rounds_update('initial_balance', self.player.balance) # Register rounds initial_balance
         self.db_manager.rounds_update('initial_bet', self.current_bet) # Register rounds initial_bet
     
@@ -188,6 +201,13 @@ class BlackjackGame:
                 self.double()
                 self.croupier_play()
                 self.finish_game(self.croupier.cards, self.croupier.values, self.player.cards, self.player.values)
+        # DB MANAGER
+        self.db_manager.rounds_update('p_final_cards', self.player.cards) # Register rounds p_final_cards
+        self.db_manager.rounds_update('p_final_value', self.player.values) # Register rounds p_final_value
+        self.db_manager.rounds_update('c_final_cards', self.croupier.cards) # Register rounds c_final_cards
+        self.db_manager.rounds_update('c_final_value', self.croupier.values) # Register rounds c_final_value
+        self.db_manager.rounds_update('final_balance', self.player.balance) # Register rounds final_balance
+        self.db_manager.rounds_update('final_bet', self.current_bet) # Register rounds final_bet
 
     # THE CROUPIER PLAYS HIS HAND
     def croupier_play(self):
@@ -220,7 +240,7 @@ class BlackjackGame:
         return winner
     
     # CONTROLS THE PAYMENTS
-    def result_game(self, winner, split=False):
+    def payments(self, winner, split=False):
         # Result of the bet
         if winner == 2 and split:
             self.player.balance += self.current_bet
@@ -234,7 +254,9 @@ class BlackjackGame:
     def finish_game(self, croupier_cards, croupier_values, player_cards, player_values):
         winner = self.set_winner(croupier_cards, croupier_values, player_cards, player_values)
         self.view.show_winner(winner)
-        self.result_game(winner)
+        self.payments(winner)
+        #DB MANAGER
+        self.db_manager.rounds_update('outcome', winner) # Register rounds outcome
 
     # GAME AFTER A SPLIT
     def split(self):
@@ -318,7 +340,7 @@ class BlackjackGame:
         print("--------------")
         print("HAND 1 WINNER:") # show winner on console
         self.view.show_winner(winner)
-        self.result_game(winner, split=True) # bet of first hand
+        self.payments(winner, split=True) # bet of first hand
         # FINISH GAME HAND2
         winner = self.set_winner(self.croupier.cards, self.croupier.values, split_player.cards, split_player.values)
         print("--------------")
@@ -328,3 +350,10 @@ class BlackjackGame:
             self.player.balance += self.current_bet_h2
         elif winner <= -1:
             self.player.balance -= self.current_bet_h2
+
+        # DB MANAGER
+        self.db_manager.rounds_update('split', True) # Register rounds split
+        self.db_manager.rounds_update('h2_cards', split_player.cards) # Register rounds h2_cards
+        self.db_manager.rounds_update('h2_value', split_player.values) # Register rounds h2_value
+        self.db_manager.rounds_update('h2_bet', self.current_bet_h2) # Register rounds h2_bet
+        self.db_manager.rounds_update('h2_outcome', winner) # Register rounds h2_outcome

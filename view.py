@@ -44,9 +44,9 @@ class BlackjackView:
 
     def ask_continue_playing(self):
         self.print_separator()
-        continue_playing = input("Continue playing = C \nAdd chips = A \nExit = E \n").lower()
         options = ["c", "a", "e"]
         while True:
+            continue_playing = input("Continue playing = C \nAdd chips = A \nExit = E \n").lower()
             if continue_playing in options:
                 break
             else:

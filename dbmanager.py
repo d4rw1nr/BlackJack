@@ -15,16 +15,21 @@ class DBManager:
         self._rounds = {'game_id':None,
                         'round_number':None,
                         'p_initial_cards':None,
+                        'p_initial_value':None,
                         'c_initial_cards':None,
+                        'c_initial_value':None,
                         'p_final_cards':None,
+                        'p_final_value':None,
                         'c_final_cards':None,
+                        'c_final_value':None,
                         'initial_balance':None,
                         'final_balance':None,
                         'initial_bet':None,
                         'final_bet':None,
                         'outcome':None,
-                        'split':None,
+                        'split':False,
                         'h2_cards':None,
+                        'h2_value':None,
                         'h2_bet':None,
                         'h2_outcome':None}
         self._moves = {'round_id':None,
@@ -183,12 +188,13 @@ class DBManager:
             insert = """
             UPDATE main.rounds 
             SET p_final_cards = %s, c_final_cards = %s, final_balance = %s, final_bet = %s, outcome = %s,
-            split = %s, h2_cards = %s, h2_bet = %s, h2_outcome = %s
+            split = %s, h2_cards = %s, h2_bet = %s, h2_outcome = %s, p_final_value = %s, c_final_value = %s, h2_value = %s
             WHERE round_id = %s
             """
             values = (self.rounds['p_final_cards'], self.rounds['c_final_cards'],
                     self.rounds['final_balance'], self.rounds['final_bet'], self.rounds['outcome'], 
                     self.rounds['split'], self.rounds['h2_cards'], self.rounds['h2_bet'], self.rounds['h2_outcome'],
+                    self.rounds['p_final_value'], self.rounds['c_final_value'], self.rounds['h2_value'],
                     round_id)
             cursor.execute(insert, values)
             self.connection.commit() # <-- COMMIT of the transaction
