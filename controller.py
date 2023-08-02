@@ -30,10 +30,11 @@ class BlackjackGame:
     # SET THE CONDITIONS OF THE GAME AND THE LOOP FOR ALL THE GAME
     def play(self):
         self.db_manager.games_update('start_time', datetime.now()) # Register games start_time
+        round_number = 0
         if isinstance(self.player, participant.Bot): # BOT VALIDATION
             self.db_manager.games_update('bot', True) # Register games start_time
             self.db_manager.games_update('initial_balance', self.player.balance) # Register games initial_balance
-            game_id = self.db_manager.insert_games()
+            game_id = self.db_manager.insert_games() # INSERT 1
             self.game_id = game_id
             while self.bot_rounds != 0:
                 if self.player.balance < self.bot_bet:
@@ -41,10 +42,15 @@ class BlackjackGame:
                     break
                 else:
                     self.start_game()
+                    #DB MANAGER
+                    round_number += 1 # Register rounds round_number
+                    self.db_manager.rounds_update('round_number', round_number) # Register rounds round_number
+                    self.round_id = self.db_manager.insert_rounds() # INSERT 1
+                    #---------
                     self.play_game()
                     self.view.show_current_balance(self.player.balance)
                     self.new_game()
-                    self.bot_rounds -= 1  
+                    self.bot_rounds -= 1
         else:
             self.view.show_welcome_message()
             balance = self.view.get_balance()
@@ -72,7 +78,7 @@ class BlackjackGame:
                         self.player.balance += add_balance
         self.db_manager.games_update('end_time', datetime.now()) # Register games end_time
         self.db_manager.games_update('final_balance', self.player.balance) # Register games final_balance
-        self.db_manager.insert_games_final(self.game_id) # Register games2
+        self.db_manager.insert_games_final(self.game_id) # INSERT 2
         self.db_manager.disconnect # Close connection to db
 
 
@@ -95,10 +101,11 @@ class BlackjackGame:
             self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
             self.view.show_player_hand(self.player.cards, self.player.values)
         # DB MANAGER
-        self.db_manager.rounds('p_initial_cards', self.player.cards) # Register rounds p_initial_cards
-        self.db_manager.rounds('c_initial_cards', self.croupier.cards) # Register rounds c_initial_cards
-        self.db_manager.rounds('initial_balance', self.player.balance) # Register rounds initial_balance
-        self.db_manager.rounds('initial_bet', self.current_bet) # Register rounds initial_bet
+        self.db_manager.rounds_update('game_id', self.game_id) # Register rounds game_id
+        self.db_manager.rounds_update('p_initial_cards', self.player.cards) # Register rounds p_initial_cards
+        self.db_manager.rounds_update('c_initial_cards', self.croupier.cards) # Register rounds c_initial_cards
+        self.db_manager.rounds_update('initial_balance', self.player.balance) # Register rounds initial_balance
+        self.db_manager.rounds_update('initial_bet', self.current_bet) # Register rounds initial_bet
     
     # ACTIONS OF THE PLAYER
     def hit(self):
