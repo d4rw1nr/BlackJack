@@ -81,6 +81,7 @@ class BlackjackGame:
                     self.play_game()
                     #DB MANAGER
                     self.db_manager.insert_rounds_final(self.round_id) # Register rounds round_number
+                    self.db_manager.rounds_restart()
                     #---------
                     self.view.show_current_balance(self.player.balance)
                     self.new_game()
