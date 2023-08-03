@@ -205,6 +205,29 @@ class DBManager:
             if cursor is not None:
                 cursor.close()
 
+    # Delete split information for every round
+    def rounds_restart(self):
+        self._rounds = {'game_id':None,
+                        'round_number':None,
+                        'p_initial_cards':None,
+                        'p_initial_value':None,
+                        'c_initial_cards':None,
+                        'c_initial_value':None,
+                        'p_final_cards':None,
+                        'p_final_value':None,
+                        'c_final_cards':None,
+                        'c_final_value':None,
+                        'initial_balance':None,
+                        'final_balance':None,
+                        'initial_bet':None,
+                        'final_bet':None,
+                        'outcome':None,
+                        'split':False,
+                        'h2_cards':None,
+                        'h2_value':None,
+                        'h2_bet':None,
+                        'h2_outcome':None}
+
     # Inserts for rounds table
     def insert_moves(self):
         if self.connection is None: #Cheking if the connection is active
