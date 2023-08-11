@@ -233,6 +233,8 @@ class BlackjackGame:
                 winner = -1
             elif len(croupier_cards) != 2 and len(player_cards) == 2: # player has blackjack
                 winner = 2
+            elif len(croupier_cards) != 2 and len(player_cards) != 2: # no one have blackjack
+                winner = 0
         elif croupier_values == player_values: # both have same value
             winner = 0
         elif croupier_values > player_values: # croupier more than player
