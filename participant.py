@@ -75,7 +75,7 @@ class Bot(Player):
                     return 's'
                 else:
                     return 'h'
-            elif player_cards[0] == "10":
+            elif player_cards[0] in ("10","J","Q","K"):
                 return 's'
             elif player_cards[0] == "9":
                 if croupier_value in [7, 10, 11]:
