@@ -36,8 +36,11 @@ class DBManager:
                         'move_number':None,
                         'move':None,
                         'p_cards':None,
+                        'p_value': None,
                         'c_cards':None,
-                        'bet':None}
+                        'c_value':None,
+                        'bet':None,
+                        'h2':False}
         self._game_id = 0
         self._round_id = 0
 
