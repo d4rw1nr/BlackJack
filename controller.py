@@ -128,16 +128,46 @@ class BlackjackGame:
         # Show cards
         self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
         self.view.show_player_hand(self.player.cards, self.player.values)
+        # DB MANAGER
+        self.moves_register('h', self.player.cards, self.player.values, self.croupier.cards, self.croupier.values, self.current_bet)
 
     def stand(self):
-        pass
+        # DB MANAGER
+        self.moves_register('s', self.player.cards, self.player.values, self.croupier.cards, self.croupier.values, self.current_bet)
     
     def double(self):
         # double the bet
         self.current_bet += self.current_bet
         # play the card
         self.player.add_card(self.deck.draw_card())
-        self.stand()
+        # DB MANAGER
+        self.moves_register('d', self.player.cards, self.player.values, self.croupier.cards, self.croupier.values, self.current_bet)
+
+    def moves_register(self, move, p_cards, p_value, c_cards, c_value, bet, h2=False): # DB MANAGER METHOD TO REGISTER NEW MOVE
+        # moves number variable
+        self.move_number += 1
+        # registers on the moves table
+        self.db_manager.moves_update('round_id', self.round_id)
+        self.db_manager.moves_update('move_number', self.move_number)
+        self.db_manager.moves_update('move', move)
+        self.db_manager.moves_update('p_cards', p_cards)
+        self.db_manager.moves_update('p_value', p_value)
+        self.db_manager.moves_update('c_cards', c_cards)
+        self.db_manager.moves_update('c_value', c_value)
+        self.db_manager.moves_update('bet', bet)
+        self.db_manager.moves_update('h2', h2)
+        # insert moves register
+        self.db_manager.insert_moves()
+        # delete of current values for a new register
+        self.db_manager.moves_update('round_id', None)
+        self.db_manager.moves_update('move_number', None)
+        self.db_manager.moves_update('move', None)
+        self.db_manager.moves_update('p_cards', None)
+        self.db_manager.moves_update('p_value', None)
+        self.db_manager.moves_update('c_cards', None)
+        self.db_manager.moves_update('c_value', None)
+        self.db_manager.moves_update('bet', None)
+        self.db_manager.moves_update('h2', False)
 
     # STANDARD FOR THE GAME AFTER THE FIRST HAND
     def game_standard(self):
@@ -155,6 +185,9 @@ class BlackjackGame:
 
     # FIRST HAND OF THE GAME
     def play_game(self):
+        # DB MANAGER
+        self.move_number = 0
+        #---
         if (self.DECK_VALUES[self.player.cards[0]] == self.DECK_VALUES[self.player.cards[1]]) and (self.player.balance >= self.current_bet*2):
             # Player choice on pairs with enough balance
             if isinstance(self.player, participant.Bot): # BOT VALIDATION
@@ -249,7 +282,8 @@ class BlackjackGame:
         if winner == 2 and split:
             self.player.balance += self.current_bet
         elif winner == 2:
-            self.player.balance += (self.current_bet + (self.current_bet/2))
+            blackjack = self.current_bet + (self.current_bet//2)
+            self.player.balance += blackjack
         elif winner == 1:
             self.player.balance += self.current_bet
         elif winner <= -1:
@@ -264,6 +298,8 @@ class BlackjackGame:
 
     # GAME AFTER A SPLIT
     def split(self):
+        # DB MANAGER
+        self.moves_register('p', self.player.cards, self.player.values, self.croupier.cards, self.croupier.values, self.current_bet)
         # Double the bet on different hands
         self.current_bet_h2 = self.current_bet
         # Split of hand
@@ -309,20 +345,22 @@ class BlackjackGame:
         # Validation for double
         if self.player.balance >= (self.current_bet + (self.current_bet_h2*2)):
             if isinstance(self.player, participant.Bot): # BOT VALIDATION
-                action = self.player.decide_action(self.croupier.cards, self.player.cards, self.player.values, allow_double=True, allow_split=False)
+                action = self.player.decide_action(self.croupier.cards, split_player.cards, split_player.values, allow_double=True, allow_split=False)
             else:
                 action = self.view.actions_player(True, False)
         else:
             if isinstance(self.player, participant.Bot): # BOT VALIDATION
-                action = self.player.decide_action(self.croupier.cards, self.player.cards, self.player.values, allow_double=False, allow_split=False)
+                action = self.player.decide_action(self.croupier.cards, split_player.cards, split_player.values, allow_double=False, allow_split=False)
             else:
                 action = self.view.actions_player(False, False)
-        # ACtion of the player/bot
+        # Action of the player/bot
         if action == "h":
             split_player.add_card(self.deck.draw_card())
             # Show cards
             self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
             self.view.show_player_hand(split_player.cards, split_player.values)
+            # DB MANAGER
+            self.moves_register('h', split_player.cards, split_player.values, self.croupier.cards, self.croupier.values ,self.current_bet_h2, True)
             # Game standard modified
             while split_player.values <= 21:
                 if isinstance(split_player, participant.Bot): # BOT VALIDATION
@@ -335,15 +373,21 @@ class BlackjackGame:
                     # Show cards
                     self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
                     self.view.show_player_hand(split_player.cards, split_player.values)
+                    # DB MANAGER
+                    self.moves_register('h', split_player.cards, split_player.values, self.croupier.cards, self.croupier.values, self.current_bet_h2, True)
                 elif action == "s":
+                    self.moves_register('s', split_player.cards, split_player.values, self.croupier.cards, self.croupier.values, self.current_bet_h2, True)
                     break
         elif action == "s":
-            pass
+            # DB MANAGER
+            self.moves_register('s', split_player.cards, split_player.values, self.croupier.cards, self.croupier.values, self.current_bet_h2, True)
         elif action == "d":
             # double the bet
             self.current_bet_h2 += self.current_bet_h2
             # play the card
             split_player.add_card(self.deck.draw_card())
+            # DB MANAGER
+            self.moves_register('d', split_player.cards, split_player.values, self.croupier.cards, self.croupier.values, self.current_bet_h2, True)
 
         # FINISH GAME
         # Show croupier hands and player hands 
