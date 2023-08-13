@@ -313,8 +313,9 @@ class BlackjackGame:
         split_player.add_card(self.deck.draw_card())
 
         # HAND 1 PLAY
-        print("-------")
-        print("HAND 1")
+        if isinstance(self.player, participant.Player) and not isinstance(self.player, participant.Bot): # BOT VALIDATION
+            print("-------")
+            print("HAND 1")
         # Show hands
         if isinstance(self.player, participant.Player) and not isinstance(self.player, participant.Bot): # BOT VALIDATION
             self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
@@ -340,8 +341,9 @@ class BlackjackGame:
             self.double()
         
         # HAND 2 PLAY
-        print("-------")
-        print("HAND 2")
+        if isinstance(self.player, participant.Player) and not isinstance(self.player, participant.Bot): # BOT VALIDATION
+            print("-------")
+            print("HAND 2")
         # Show hands
         if isinstance(self.player, participant.Player) and not isinstance(self.player, participant.Bot): # BOT VALIDATION
             self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
@@ -403,15 +405,20 @@ class BlackjackGame:
             self.view.show_player_hand(split_player.cards, split_player.values)
         # FINISH GAME HAND1
         winner = self.set_winner(self.croupier.cards, self.croupier.values, self.player.cards, self.player.values)
-        print("--------------")
-        print("HAND 1 WINNER:") # show winner on console
+        # DB MANAGER
+        self.db_manager.rounds_update('outcome', winner) # Register rounds outcome
+        #---
+        if isinstance(self.player, participant.Player) and not isinstance(self.player, participant.Bot): # BOT VALIDATION
+            print("--------------")
+            print("HAND 1 WINNER:") # show winner on console
         if isinstance(self.player, participant.Player) and not isinstance(self.player, participant.Bot): # BOT VALIDATION
             self.view.show_winner(winner)
         self.payments(winner, split=True) # bet of first hand
         # FINISH GAME HAND2
         winner = self.set_winner(self.croupier.cards, self.croupier.values, split_player.cards, split_player.values)
-        print("--------------")
-        print("HAND 2 WINNER:") # show winner on console
+        if isinstance(self.player, participant.Player) and not isinstance(self.player, participant.Bot): # BOT VALIDATION
+            print("--------------")
+            print("HAND 2 WINNER:") # show winner on console
         if isinstance(self.player, participant.Player) and not isinstance(self.player, participant.Bot): # BOT VALIDATION
             self.view.show_winner(winner)
         if winner >= 1:  # bet of second hand
@@ -420,7 +427,6 @@ class BlackjackGame:
             self.player.balance -= self.current_bet_h2
 
         # DB MANAGER
-        self.db_manager.rounds_update('outcome', winner) # Register rounds outcome
         self.db_manager.rounds_update('split', True) # Register rounds split
         self.db_manager.rounds_update('h2_cards', split_player.cards) # Register rounds h2_cards
         self.db_manager.rounds_update('h2_value', split_player.values) # Register rounds h2_value
