@@ -107,7 +107,7 @@ class DBManager:
                 user=os.getenv('DB_USER'),
                 password=os.getenv('DB_PASSWORD')
             )
-            print("Conexion Exitosa")
+            print("Successful Connection!")
         except psycopg2.Error as e:
             print(f"Error connecting to the database: {e}")
 
