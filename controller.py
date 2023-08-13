@@ -52,9 +52,9 @@ class BlackjackGame:
                     self.db_manager.insert_rounds_final(self.round_id) # Register rounds round_number
                     self.db_manager.rounds_restart()
                     #---------
-                    self.view.show_current_balance(self.player.balance)
                     self.new_game()
                     self.bot_rounds -= 1
+            print("Games completed!")
         else:
             self.view.show_welcome_message()
             balance = self.view.get_balance()
@@ -126,8 +126,9 @@ class BlackjackGame:
     def hit(self):
         self.player.add_card(self.deck.draw_card())
         # Show cards
-        self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
-        self.view.show_player_hand(self.player.cards, self.player.values)
+        if isinstance(self.player, participant.Player) and not isinstance(self.player, participant.Bot): # BOT VALIDATION
+            self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
+            self.view.show_player_hand(self.player.cards, self.player.values)
         # DB MANAGER
         self.moves_register('h', self.player.cards, self.player.values, self.croupier.cards, self.croupier.values, self.current_bet)
 
@@ -249,8 +250,9 @@ class BlackjackGame:
         while self.croupier.values < 17:
             self.croupier.add_card(self.deck.draw_card())
         # Show cards
-        self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
-        self.view.show_player_hand(self.player.cards, self.player.values)
+        if isinstance(self.player, participant.Player) and not isinstance(self.player, participant.Bot): # BOT VALIDATION
+            self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
+            self.view.show_player_hand(self.player.cards, self.player.values)
 
     # RETURN WINNER -1=HOUSE_WINS 0=PUSH 1=PLAYER_WINS
     def set_winner(self, croupier_cards, croupier_values, player_cards, player_values):
@@ -291,7 +293,8 @@ class BlackjackGame:
 
     def finish_game(self, croupier_cards, croupier_values, player_cards, player_values):
         winner = self.set_winner(croupier_cards, croupier_values, player_cards, player_values)
-        self.view.show_winner(winner)
+        if isinstance(self.player, participant.Player) and not isinstance(self.player, participant.Bot): # BOT VALIDATION
+            self.view.show_winner(winner)
         self.payments(winner)
         #DB MANAGER
         self.db_manager.rounds_update('outcome', winner) # Register rounds outcome
@@ -313,8 +316,9 @@ class BlackjackGame:
         print("-------")
         print("HAND 1")
         # Show hands
-        self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
-        self.view.show_player_hand(self.player.cards, self.player.values)
+        if isinstance(self.player, participant.Player) and not isinstance(self.player, participant.Bot): # BOT VALIDATION
+            self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
+            self.view.show_player_hand(self.player.cards, self.player.values)
             # Validation of the balance for double
         if self.player.balance >= ((self.current_bet*2) + self.current_bet_h2):
             if isinstance(self.player, participant.Bot): # BOT VALIDATION
@@ -339,8 +343,9 @@ class BlackjackGame:
         print("-------")
         print("HAND 2")
         # Show hands
-        self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
-        self.view.show_player_hand(split_player.cards, split_player.values)
+        if isinstance(self.player, participant.Player) and not isinstance(self.player, participant.Bot): # BOT VALIDATION
+            self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
+            self.view.show_player_hand(split_player.cards, split_player.values)
         # Game standard adjusted
         # Validation for double
         if self.player.balance >= (self.current_bet + (self.current_bet_h2*2)):
@@ -357,8 +362,9 @@ class BlackjackGame:
         if action == "h":
             split_player.add_card(self.deck.draw_card())
             # Show cards
-            self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
-            self.view.show_player_hand(split_player.cards, split_player.values)
+            if isinstance(self.player, participant.Player) and not isinstance(self.player, participant.Bot): # BOT VALIDATION
+                self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
+                self.view.show_player_hand(split_player.cards, split_player.values)
             # DB MANAGER
             self.moves_register('h', split_player.cards, split_player.values, self.croupier.cards, self.croupier.values ,self.current_bet_h2, True)
             # Game standard modified
@@ -371,8 +377,9 @@ class BlackjackGame:
                 if action == "h": 
                     split_player.add_card(self.deck.draw_card())
                     # Show cards
-                    self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
-                    self.view.show_player_hand(split_player.cards, split_player.values)
+                    if isinstance(self.player, participant.Player) and not isinstance(self.player, participant.Bot): # BOT VALIDATION
+                        self.view.show_croupier_hand(self.croupier.cards, self.croupier.values)
+                        self.view.show_player_hand(split_player.cards, split_player.values)
                     # DB MANAGER
                     self.moves_register('h', split_player.cards, split_player.values, self.croupier.cards, self.croupier.values, self.current_bet_h2, True)
                 elif action == "s":
@@ -392,18 +399,21 @@ class BlackjackGame:
         # FINISH GAME
         # Show croupier hands and player hands 
         self.croupier_play()
-        self.view.show_player_hand(split_player.cards, split_player.values)
+        if isinstance(self.player, participant.Player) and not isinstance(self.player, participant.Bot): # BOT VALIDATION
+            self.view.show_player_hand(split_player.cards, split_player.values)
         # FINISH GAME HAND1
         winner = self.set_winner(self.croupier.cards, self.croupier.values, self.player.cards, self.player.values)
         print("--------------")
         print("HAND 1 WINNER:") # show winner on console
-        self.view.show_winner(winner)
+        if isinstance(self.player, participant.Player) and not isinstance(self.player, participant.Bot): # BOT VALIDATION
+            self.view.show_winner(winner)
         self.payments(winner, split=True) # bet of first hand
         # FINISH GAME HAND2
         winner = self.set_winner(self.croupier.cards, self.croupier.values, split_player.cards, split_player.values)
         print("--------------")
         print("HAND 2 WINNER:") # show winner on console
-        self.view.show_winner(winner)
+        if isinstance(self.player, participant.Player) and not isinstance(self.player, participant.Bot): # BOT VALIDATION
+            self.view.show_winner(winner)
         if winner >= 1:  # bet of second hand
             self.player.balance += self.current_bet_h2
         elif winner <= -1:
