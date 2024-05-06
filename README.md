@@ -21,7 +21,7 @@ Welcome to the Blackjack Game App! This application offers an immersive environm
 
 1. Clone this repository:
 ```
-git clone [your-repo-link]
+git clone https://github.com/d4rw1nr/Py_BlackJack_Analysis
 ```
 2. Set up your virtual environment and activate it (optional but recommended).
 3. Install the required packages:
